@@ -826,7 +826,7 @@ app.get('/', (c) => {
                     새로운 지역 일자리 창출
                 </p>
                 <div class="flex gap-2 md:gap-4 justify-center flex-wrap px-2">
-                    <a href="#features" class="bg-white text-purple-600 px-4 md:px-8 py-2 md:py-4 rounded-full font-bold text-sm md:text-base hover:shadow-xl transition">
+                    <a href="#services" class="bg-white text-purple-600 px-4 md:px-8 py-2 md:py-4 rounded-full font-bold text-sm md:text-base hover:shadow-xl transition">
                         서비스 시작
                     </a>
                     <a href="#benefits" class="border-2 border-white px-4 md:px-8 py-2 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-white hover:text-purple-600 transition">
@@ -837,7 +837,7 @@ app.get('/', (c) => {
         </section>
 
         <!-- Quick Menu Cards -->
-        <section class="py-8 md:py-16 bg-white">
+        <section id="services" class="py-8 md:py-16 bg-white">
             <div class="container mx-auto px-4 md:px-6">
                 <h2 class="text-xl md:text-3xl font-bold text-center mb-6 md:mb-12">주요 서비스</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6" id="quickMenu">
@@ -900,7 +900,7 @@ app.get('/', (c) => {
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="py-10 md:py-20 bg-white">
+        <section id="allServices" class="py-10 md:py-20 bg-white">
             <div class="container mx-auto px-4 md:px-6">
                 <h2 class="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16">전체 서비스 메뉴</h2>
                 <div class="grid md:grid-cols-3 gap-4 md:gap-8" id="featuresGrid">

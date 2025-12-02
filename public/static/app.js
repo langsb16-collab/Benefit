@@ -265,10 +265,13 @@ function updatePlatformLanguage(lang) {
   if (btnDetail) btnDetail.textContent = texts.btnDetail;
   
   // Update section titles
-  const sectionTitles = document.querySelectorAll('h2');
-  if (sectionTitles[0]) sectionTitles[0].textContent = texts.sectionServices;
-  if (sectionTitles[1]) sectionTitles[1].textContent = texts.sectionBenefits;
-  if (sectionTitles[2]) sectionTitles[2].textContent = texts.sectionAllServices;
+  const servicesTitle = document.querySelector('#services h2');
+  const benefitsTitle = document.querySelector('#benefits h2');
+  const allServicesTitle = document.querySelector('#allServices h2');
+  
+  if (servicesTitle) servicesTitle.textContent = texts.sectionServices;
+  if (benefitsTitle) benefitsTitle.textContent = texts.sectionBenefits;
+  if (allServicesTitle) allServicesTitle.textContent = texts.sectionAllServices;
   
   // Update benefit cards
   const benefitCards = document.querySelectorAll('#benefits .card-hover');
