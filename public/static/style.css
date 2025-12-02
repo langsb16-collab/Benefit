@@ -139,10 +139,11 @@ body {
 }
 
 .nav-dropdown-item {
-  padding: 12px 20px;
+  padding: 14px 20px;
   color: #333;
   transition: all 0.2s ease;
   border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
 }
 
 .nav-dropdown-item:last-child {
@@ -150,7 +151,17 @@ body {
 }
 
 .nav-dropdown-item:hover {
-  background: #f5f5ff;
+  background: linear-gradient(to right, #f5f5ff, #fafaff);
+  color: #667eea;
+}
+
+.nav-dropdown-item .font-medium {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 2px;
+}
+
+.nav-dropdown-item:hover .font-medium {
   color: #667eea;
 }
 

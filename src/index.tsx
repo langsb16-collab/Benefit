@@ -10,117 +10,567 @@ app.use('/api/*', cors())
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
 
-// Menu data API
+// Menu data API with multilingual support
 app.get('/api/menu', (c) => {
-  const menuData = {
-    mainMenu: [
-      {
-        id: 'home',
-        name: '홈',
-        icon: 'fa-home',
-        path: '/'
-      },
-      {
-        id: 'nearby',
-        name: '주변가게·배달',
-        icon: 'fa-motorcycle',
-        path: '/nearby',
-        subMenu: [
-          { id: 'delivery', name: '음식 배달', icon: 'fa-utensils' },
-          { id: 'takeout', name: '포장 주문', icon: 'fa-shopping-bag' },
-          { id: 'reservation', name: '예약 주문', icon: 'fa-clock' },
-          { id: 'categories', name: '카테고리별 상점', icon: 'fa-th-large' }
-        ]
-      },
-      {
-        id: 'market',
-        name: '장보기·전통시장',
-        icon: 'fa-shopping-basket',
-        path: '/market',
-        subMenu: [
-          { id: 'traditional', name: '전통시장 장보기', icon: 'fa-store-alt' },
-          { id: 'combined', name: '합배송', icon: 'fa-boxes' },
-          { id: 'local', name: '특산물·로컬푸드', icon: 'fa-leaf' },
-          { id: 'coupon', name: '시장 쿠폰', icon: 'fa-ticket-alt' }
-        ]
-      },
-      {
-        id: 'group',
-        name: '공동구매',
-        icon: 'fa-users',
-        path: '/group',
-        subMenu: [
-          { id: 'ongoing', name: '진행중 공동구매', icon: 'fa-hourglass-half' },
-          { id: 'completed', name: '마감된 공동구매', icon: 'fa-check-circle' }
-        ]
-      },
-      {
-        id: 'events',
-        name: '지역행사·축제',
-        icon: 'fa-calendar-alt',
-        path: '/events',
-        subMenu: [
-          { id: 'list', name: '행사 목록', icon: 'fa-list' },
-          { id: 'tickets', name: '행사 티켓', icon: 'fa-ticket-alt' },
-          { id: 'stamp', name: '스탬프 투어', icon: 'fa-stamp' }
-        ]
-      },
-      {
-        id: 'payment',
-        name: '지역화폐 결제',
-        icon: 'fa-credit-card',
-        path: '/payment',
-        subMenu: [
-          { id: 'register', name: '지역화폐 등록', icon: 'fa-id-card' },
-          { id: 'balance', name: '잔액조회', icon: 'fa-wallet' },
-          { id: 'history', name: '결제내역', icon: 'fa-history' },
-          { id: 'settlement', name: '정산내역', icon: 'fa-file-invoice-dollar' }
-        ]
-      },
-      {
-        id: 'mypage',
-        name: '마이페이지',
-        icon: 'fa-user',
-        path: '/mypage',
-        subMenu: [
-          { id: 'orders', name: '주문내역', icon: 'fa-receipt' },
-          { id: 'coupons', name: '쿠폰함', icon: 'fa-tags' },
-          { id: 'balance', name: '지역화폐 잔액', icon: 'fa-coins' },
-          { id: 'favorites', name: '즐겨찾기', icon: 'fa-heart' },
-          { id: 'support', name: '고객센터', icon: 'fa-headset' }
-        ]
-      },
-      {
-        id: 'merchant',
-        name: '소상공인센터',
-        icon: 'fa-store',
-        path: '/merchant',
-        subMenu: [
-          { id: 'info', name: '상점 정보 관리', icon: 'fa-info-circle' },
-          { id: 'menu', name: '메뉴 관리 (OCR)', icon: 'fa-camera' },
-          { id: 'pos', name: 'POS 연동', icon: 'fa-cash-register' },
-          { id: 'orders', name: '주문·배차 관리', icon: 'fa-clipboard-list' },
-          { id: 'stats', name: '매출·통계', icon: 'fa-chart-bar' },
-          { id: 'settlement', name: '정산관리', icon: 'fa-calculator' }
-        ]
-      },
-      {
-        id: 'admin',
-        name: '지자체관리자',
-        icon: 'fa-shield-alt',
-        path: '/admin',
-        subMenu: [
-          { id: 'dashboard', name: '정책 대시보드', icon: 'fa-tachometer-alt' },
-          { id: 'analysis', name: '데이터 분석', icon: 'fa-chart-pie' },
-          { id: 'coupons', name: '공공 쿠폰 발행', icon: 'fa-gift' },
-          { id: 'notice', name: '설문·공지', icon: 'fa-bullhorn' },
-          { id: 'merchants', name: '가맹점 관리', icon: 'fa-store-alt' },
-          { id: 'delivery', name: '배달대행 관리', icon: 'fa-truck' }
-        ]
-      }
-    ]
+  const lang = c.req.query('lang') || 'ko'
+  
+  const menuTranslations: Record<string, any> = {
+    ko: {
+      mainMenu: [
+        { id: 'home', name: '홈', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: '주변가게·배달', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: '음식 배달', desc: '배달/포장/예약 주문', icon: 'fa-utensils' },
+            { id: 'takeout', name: '포장 주문', desc: '픽업 서비스', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: '예약 주문', desc: '사전 예약', icon: 'fa-clock' },
+            { id: 'categories', name: '카테고리별 상점', desc: '동네 반찬/카페/마트', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: '장보기·전통시장', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: '전통시장 장보기', desc: '재래시장 카테고리별', icon: 'fa-store-alt' },
+            { id: 'combined', name: '합배송', desc: '묶음배송 시스템', icon: 'fa-boxes' },
+            { id: 'local', name: '특산물·로컬푸드', desc: '지역 농산물 직거래', icon: 'fa-leaf' },
+            { id: 'coupon', name: '시장 쿠폰', desc: '지자체 발행 상생쿠폰', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: '공동구매', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: '진행중 공동구매', desc: '실시간 참여율 표시', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: '마감된 공동구매', desc: '완료된 공동구매 내역', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: '지역행사·축제', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: '행사 목록', desc: '지역 축제 정보', icon: 'fa-list' },
+            { id: 'tickets', name: '행사 티켓', desc: 'O2O 티켓 구매', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: '스탬프 투어', desc: 'GPS 기반 스탬프 투어', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: '지역화폐 결제', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: '지역화폐 등록', desc: '모바일형/카드형 등록', icon: 'fa-id-card' },
+            { id: 'balance', name: '잔액조회', desc: '실시간 잔액 확인', icon: 'fa-wallet' },
+            { id: 'history', name: '결제내역', desc: '거래 이력 조회', icon: 'fa-history' },
+            { id: 'settlement', name: '정산내역', desc: '캐시백/정산 내역', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: '마이페이지', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: '주문내역', desc: '주문/환불 내역', icon: 'fa-receipt' },
+            { id: 'coupons', name: '쿠폰함', desc: '보유 쿠폰 관리', icon: 'fa-tags' },
+            { id: 'balance', name: '지역화폐 잔액', desc: '실시간 잔액', icon: 'fa-coins' },
+            { id: 'favorites', name: '즐겨찾기', desc: '즐겨찾는 상점', icon: 'fa-heart' },
+            { id: 'support', name: '고객센터', desc: '문의/FAQ', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: '소상공인센터', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: '상점 정보 관리', desc: '사업자 인증, 영업시간 설정', icon: 'fa-info-circle' },
+            { id: 'menu', name: '메뉴 관리 (OCR)', desc: '사진·가격 자동 인식', icon: 'fa-camera' },
+            { id: 'pos', name: 'POS 연동', desc: '자동 주문 수신', icon: 'fa-cash-register' },
+            { id: 'orders', name: '주문·배차 관리', desc: '실시간 주문 접수', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: '매출·통계', desc: '요일별/시간대별 분석', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: '정산관리', desc: '수수료 1~2%, 익일 정산', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: '지자체관리자', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: '정책 대시보드', desc: '지역경제 지표 시각화', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: '데이터 분석', desc: '상권 활성화 지표', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: '공공 쿠폰 발행', desc: '상생쿠폰 시스템', icon: 'fa-gift' },
+            { id: 'notice', name: '설문·공지', desc: '긴급공지/정책 설문', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: '가맹점 관리', desc: '가맹점 승인/관리', icon: 'fa-store-alt' },
+            { id: 'delivery', name: '배달대행 관리', desc: 'GPS 실시간 매핑', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    en: {
+      mainMenu: [
+        { id: 'home', name: 'Home', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: 'Nearby Stores·Delivery', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: 'Food Delivery', desc: 'Delivery/Takeout/Reservation', icon: 'fa-utensils' },
+            { id: 'takeout', name: 'Takeout Order', desc: 'Pickup service', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: 'Reservation', desc: 'Pre-order', icon: 'fa-clock' },
+            { id: 'categories', name: 'Store Categories', desc: 'Local food/Cafe/Mart', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: 'Shopping·Market', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: 'Traditional Market', desc: 'Market categories', icon: 'fa-store-alt' },
+            { id: 'combined', name: 'Combined Delivery', desc: 'Bundle delivery system', icon: 'fa-boxes' },
+            { id: 'local', name: 'Local Products', desc: 'Direct trade of local produce', icon: 'fa-leaf' },
+            { id: 'coupon', name: 'Market Coupons', desc: 'Government-issued coupons', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: 'Group Buying', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: 'Ongoing Deals', desc: 'Real-time participation rate', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: 'Completed Deals', desc: 'Finished group buying history', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: 'Local Events·Festivals', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: 'Event List', desc: 'Local festival information', icon: 'fa-list' },
+            { id: 'tickets', name: 'Event Tickets', desc: 'O2O ticket purchase', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: 'Stamp Tour', desc: 'GPS-based stamp tour', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: 'Local Currency', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: 'Register Currency', desc: 'Mobile/Card type registration', icon: 'fa-id-card' },
+            { id: 'balance', name: 'Check Balance', desc: 'Real-time balance check', icon: 'fa-wallet' },
+            { id: 'history', name: 'Payment History', desc: 'Transaction history inquiry', icon: 'fa-history' },
+            { id: 'settlement', name: 'Settlement', desc: 'Cashback/settlement details', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: 'My Page', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: 'Order History', desc: 'Orders/Refunds', icon: 'fa-receipt' },
+            { id: 'coupons', name: 'My Coupons', desc: 'Coupon management', icon: 'fa-tags' },
+            { id: 'balance', name: 'Currency Balance', desc: 'Real-time balance', icon: 'fa-coins' },
+            { id: 'favorites', name: 'Favorites', desc: 'Favorite stores', icon: 'fa-heart' },
+            { id: 'support', name: 'Support', desc: 'Inquiry/FAQ', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: 'Merchant Center', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: 'Store Info', desc: 'Business certification, hours', icon: 'fa-info-circle' },
+            { id: 'menu', name: 'Menu (OCR)', desc: 'Auto photo/price recognition', icon: 'fa-camera' },
+            { id: 'pos', name: 'POS Integration', desc: 'Automatic order reception', icon: 'fa-cash-register' },
+            { id: 'orders', name: 'Order Management', desc: 'Real-time order processing', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: 'Sales·Statistics', desc: 'Daily/hourly analysis', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: 'Settlement', desc: '1~2% fee, next-day settlement', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: 'Admin Dashboard', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: 'Policy Dashboard', desc: 'Local economy indicators', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: 'Data Analysis', desc: 'Commercial district metrics', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: 'Public Coupons', desc: 'Coupon issuance system', icon: 'fa-gift' },
+            { id: 'notice', name: 'Surveys·Notices', desc: 'Urgent notices/policy surveys', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: 'Merchant Management', desc: 'Merchant approval/management', icon: 'fa-store-alt' },
+            { id: 'delivery', name: 'Delivery Management', desc: 'GPS real-time mapping', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    zh: {
+      mainMenu: [
+        { id: 'home', name: '首页', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: '附近商店·配送', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: '餐饮配送', desc: '配送/自提/预订', icon: 'fa-utensils' },
+            { id: 'takeout', name: '自提订单', desc: '取餐服务', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: '预约订单', desc: '提前预订', icon: 'fa-clock' },
+            { id: 'categories', name: '商店分类', desc: '本地美食/咖啡/超市', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: '购物·传统市场', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: '传统市场购物', desc: '市场分类购物', icon: 'fa-store-alt' },
+            { id: 'combined', name: '合并配送', desc: '捆绑配送系统', icon: 'fa-boxes' },
+            { id: 'local', name: '特产·本地食品', desc: '地方农产品直销', icon: 'fa-leaf' },
+            { id: 'coupon', name: '市场优惠券', desc: '政府发行优惠券', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: '团购', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: '进行中团购', desc: '实时参与率显示', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: '已结束团购', desc: '完成的团购历史', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: '地区活动·节日', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: '活动列表', desc: '地区节日信息', icon: 'fa-list' },
+            { id: 'tickets', name: '活动门票', desc: 'O2O门票购买', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: '印章之旅', desc: '基于GPS的印章之旅', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: '地区货币支付', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: '注册地区货币', desc: '手机/卡片类型注册', icon: 'fa-id-card' },
+            { id: 'balance', name: '余额查询', desc: '实时余额查询', icon: 'fa-wallet' },
+            { id: 'history', name: '支付记录', desc: '交易历史查询', icon: 'fa-history' },
+            { id: 'settlement', name: '结算记录', desc: '返现/结算详情', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: '我的页面', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: '订单记录', desc: '订单/退款记录', icon: 'fa-receipt' },
+            { id: 'coupons', name: '优惠券', desc: '优惠券管理', icon: 'fa-tags' },
+            { id: 'balance', name: '地区货币余额', desc: '实时余额', icon: 'fa-coins' },
+            { id: 'favorites', name: '收藏夹', desc: '收藏的商店', icon: 'fa-heart' },
+            { id: 'support', name: '客户服务', desc: '咨询/常见问题', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: '小企业中心', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: '商店信息管理', desc: '营业执照认证,营业时间', icon: 'fa-info-circle' },
+            { id: 'menu', name: '菜单管理(OCR)', desc: '自动识别照片·价格', icon: 'fa-camera' },
+            { id: 'pos', name: 'POS集成', desc: '自动订单接收', icon: 'fa-cash-register' },
+            { id: 'orders', name: '订单·调度管理', desc: '实时订单处理', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: '销售·统计', desc: '按日期/时间分析', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: '结算管理', desc: '手续费1~2%,次日结算', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: '地方政府管理', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: '政策仪表板', desc: '地区经济指标可视化', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: '数据分析', desc: '商圈激活指标', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: '公共优惠券发行', desc: '优惠券发行系统', icon: 'fa-gift' },
+            { id: 'notice', name: '调查·公告', desc: '紧急公告/政策调查', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: '商户管理', desc: '商户审批/管理', icon: 'fa-store-alt' },
+            { id: 'delivery', name: '配送代理管理', desc: 'GPS实时映射', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    ja: {
+      mainMenu: [
+        { id: 'home', name: 'ホーム', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: '近くの店舗·配達', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: '食品配達', desc: '配達/テイクアウト/予約', icon: 'fa-utensils' },
+            { id: 'takeout', name: 'テイクアウト注文', desc: 'ピックアップサービス', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: '予約注文', desc: '事前予約', icon: 'fa-clock' },
+            { id: 'categories', name: '店舗カテゴリ', desc: '地元料理/カフェ/マート', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: '買い物·伝統市場', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: '伝統市場での買い物', desc: '市場カテゴリ別', icon: 'fa-store-alt' },
+            { id: 'combined', name: '共同配送', desc: 'バンドル配送システム', icon: 'fa-boxes' },
+            { id: 'local', name: '特産品·ローカルフード', desc: '地域農産物直取引', icon: 'fa-leaf' },
+            { id: 'coupon', name: '市場クーポン', desc: '自治体発行クーポン', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: '共同購入', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: '進行中の共同購入', desc: 'リアルタイム参加率表示', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: '終了した共同購入', desc: '完了した共同購入履歴', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: '地域イベント·祭り', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: 'イベントリスト', desc: '地域祭り情報', icon: 'fa-list' },
+            { id: 'tickets', name: 'イベントチケット', desc: 'O2Oチケット購入', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: 'スタンプツアー', desc: 'GPSベースのスタンプツアー', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: '地域通貨決済', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: '地域通貨登録', desc: 'モバイル/カード型登録', icon: 'fa-id-card' },
+            { id: 'balance', name: '残高照会', desc: 'リアルタイム残高確認', icon: 'fa-wallet' },
+            { id: 'history', name: '決済履歴', desc: '取引履歴照会', icon: 'fa-history' },
+            { id: 'settlement', name: '精算履歴', desc: 'キャッシュバック/精算詳細', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: 'マイページ', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: '注文履歴', desc: '注文/返金履歴', icon: 'fa-receipt' },
+            { id: 'coupons', name: 'クーポン', desc: 'クーポン管理', icon: 'fa-tags' },
+            { id: 'balance', name: '地域通貨残高', desc: 'リアルタイム残高', icon: 'fa-coins' },
+            { id: 'favorites', name: 'お気に入り', desc: 'お気に入りの店舗', icon: 'fa-heart' },
+            { id: 'support', name: 'カスタマーサポート', desc: 'お問い合わせ/FAQ', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: '小規模事業者センター', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: '店舗情報管理', desc: '事業者認証,営業時間設定', icon: 'fa-info-circle' },
+            { id: 'menu', name: 'メニュー管理(OCR)', desc: '写真·価格自動認識', icon: 'fa-camera' },
+            { id: 'pos', name: 'POS連携', desc: '自動注文受信', icon: 'fa-cash-register' },
+            { id: 'orders', name: '注文·配車管理', desc: 'リアルタイム注文処理', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: '売上·統計', desc: '曜日別/時間帯別分析', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: '精算管理', desc: '手数料1~2%,翌日精算', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: '自治体管理者', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: '政策ダッシュボード', desc: '地域経済指標の可視化', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: 'データ分析', desc: '商圏活性化指標', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: '公共クーポン発行', desc: 'クーポン発行システム', icon: 'fa-gift' },
+            { id: 'notice', name: 'アンケート·お知らせ', desc: '緊急お知らせ/政策アンケート', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: '加盟店管理', desc: '加盟店承認/管理', icon: 'fa-store-alt' },
+            { id: 'delivery', name: '配達代行管理', desc: 'GPSリアルタイムマッピング', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    vi: {
+      mainMenu: [
+        { id: 'home', name: 'Trang chủ', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: 'Cửa hàng·Giao hàng', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: 'Giao đồ ăn', desc: 'Giao hàng/Mang đi/Đặt trước', icon: 'fa-utensils' },
+            { id: 'takeout', name: 'Đơn mang đi', desc: 'Dịch vụ lấy hàng', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: 'Đặt trước', desc: 'Đặt trước', icon: 'fa-clock' },
+            { id: 'categories', name: 'Danh mục cửa hàng', desc: 'Đồ ăn địa phương/Quán cà phê/Chợ', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: 'Mua sắm·Chợ truyền thống', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: 'Chợ truyền thống', desc: 'Danh mục chợ', icon: 'fa-store-alt' },
+            { id: 'combined', name: 'Giao hàng kết hợp', desc: 'Hệ thống giao hàng gộp', icon: 'fa-boxes' },
+            { id: 'local', name: 'Đặc sản·Thực phẩm địa phương', desc: 'Giao dịch trực tiếp nông sản địa phương', icon: 'fa-leaf' },
+            { id: 'coupon', name: 'Phiếu giảm giá chợ', desc: 'Phiếu giảm giá do chính phủ phát hành', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: 'Mua nhóm', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: 'Đang tiến hành', desc: 'Hiển thị tỷ lệ tham gia theo thời gian thực', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: 'Đã kết thúc', desc: 'Lịch sử mua nhóm đã hoàn thành', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: 'Sự kiện·Lễ hội', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: 'Danh sách sự kiện', desc: 'Thông tin lễ hội địa phương', icon: 'fa-list' },
+            { id: 'tickets', name: 'Vé sự kiện', desc: 'Mua vé O2O', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: 'Tham quan tem', desc: 'Tham quan tem dựa trên GPS', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: 'Tiền tệ địa phương', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: 'Đăng ký tiền tệ', desc: 'Đăng ký loại di động/thẻ', icon: 'fa-id-card' },
+            { id: 'balance', name: 'Kiểm tra số dư', desc: 'Kiểm tra số dư theo thời gian thực', icon: 'fa-wallet' },
+            { id: 'history', name: 'Lịch sử thanh toán', desc: 'Tra cứu lịch sử giao dịch', icon: 'fa-history' },
+            { id: 'settlement', name: 'Quyết toán', desc: 'Chi tiết hoàn tiền/quyết toán', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: 'Trang của tôi', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: 'Lịch sử đơn hàng', desc: 'Đơn hàng/Hoàn tiền', icon: 'fa-receipt' },
+            { id: 'coupons', name: 'Phiếu giảm giá', desc: 'Quản lý phiếu giảm giá', icon: 'fa-tags' },
+            { id: 'balance', name: 'Số dư tiền tệ', desc: 'Số dư theo thời gian thực', icon: 'fa-coins' },
+            { id: 'favorites', name: 'Yêu thích', desc: 'Cửa hàng yêu thích', icon: 'fa-heart' },
+            { id: 'support', name: 'Hỗ trợ', desc: 'Hỏi đáp/Câu hỏi thường gặp', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: 'Trung tâm thương nhân', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: 'Quản lý thông tin cửa hàng', desc: 'Chứng nhận doanh nghiệp, giờ mở cửa', icon: 'fa-info-circle' },
+            { id: 'menu', name: 'Quản lý thực đơn (OCR)', desc: 'Tự động nhận diện ảnh·giá', icon: 'fa-camera' },
+            { id: 'pos', name: 'Tích hợp POS', desc: 'Tiếp nhận đơn hàng tự động', icon: 'fa-cash-register' },
+            { id: 'orders', name: 'Quản lý đơn hàng·Điều phối', desc: 'Xử lý đơn hàng theo thời gian thực', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: 'Doanh số·Thống kê', desc: 'Phân tích theo ngày/giờ', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: 'Quản lý quyết toán', desc: 'Phí 1~2%, quyết toán ngày hôm sau', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: 'Quản trị viên', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: 'Bảng điều khiển chính sách', desc: 'Trực quan hóa chỉ số kinh tế địa phương', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: 'Phân tích dữ liệu', desc: 'Chỉ số kích hoạt khu thương mại', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: 'Phát hành phiếu công cộng', desc: 'Hệ thống phát hành phiếu giảm giá', icon: 'fa-gift' },
+            { id: 'notice', name: 'Khảo sát·Thông báo', desc: 'Thông báo khẩn cấp/khảo sát chính sách', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: 'Quản lý thương nhân', desc: 'Phê duyệt/quản lý thương nhân', icon: 'fa-store-alt' },
+            { id: 'delivery', name: 'Quản lý giao hàng', desc: 'Ánh xạ GPS theo thời gian thực', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    th: {
+      mainMenu: [
+        { id: 'home', name: 'หน้าแรก', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: 'ร้านค้าใกล้เคียง·จัดส่ง', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: 'จัดส่งอาหาร', desc: 'จัดส่ง/รับเอง/จอง', icon: 'fa-utensils' },
+            { id: 'takeout', name: 'สั่งกลับบ้าน', desc: 'บริการรับสินค้า', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: 'จองล่วงหน้า', desc: 'สั่งจองล่วงหน้า', icon: 'fa-clock' },
+            { id: 'categories', name: 'หมวดหมู่ร้านค้า', desc: 'อาหารท้องถิ่น/คาเฟ่/มาร์ท', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: 'ช้อปปิ้ง·ตลาดดั้งเดิม', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: 'ตลาดดั้งเดิม', desc: 'หมวดหมู่ตลาด', icon: 'fa-store-alt' },
+            { id: 'combined', name: 'จัดส่งรวม', desc: 'ระบบจัดส่งแบบรวม', icon: 'fa-boxes' },
+            { id: 'local', name: 'ผลิตภัณฑ์ท้องถิ่น', desc: 'ซื้อขายตรงผลผลิตท้องถิ่น', icon: 'fa-leaf' },
+            { id: 'coupon', name: 'คูปองตลาด', desc: 'คูปองที่ออกโดยรัฐบาล', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: 'ซื้อกลุ่ม', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: 'กำลังดำเนินการ', desc: 'แสดงอัตราการเข้าร่วมแบบเรียลไทม์', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: 'เสร็จสิ้นแล้ว', desc: 'ประวัติซื้อกลุ่มที่เสร็จสิ้น', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: 'กิจกรรมท้องถิ่น·เทศกาล', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: 'รายการกิจกรรม', desc: 'ข้อมูลเทศกาลท้องถิ่น', icon: 'fa-list' },
+            { id: 'tickets', name: 'ตั๋วกิจกรรม', desc: 'ซื้อตั๋ว O2O', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: 'ทัวร์แสตมป์', desc: 'ทัวร์แสตมป์ตาม GPS', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: 'เงินท้องถิ่น', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: 'ลงทะเบียนเงินท้องถิ่น', desc: 'ลงทะเบียนแบบมือถือ/บัตร', icon: 'fa-id-card' },
+            { id: 'balance', name: 'ตรวจสอบยอดเงิน', desc: 'ตรวจสอบยอดเงินแบบเรียลไทม์', icon: 'fa-wallet' },
+            { id: 'history', name: 'ประวัติการชำระเงิน', desc: 'สอบถามประวัติธุรกรรม', icon: 'fa-history' },
+            { id: 'settlement', name: 'การชำระบัญชี', desc: 'รายละเอียดการคืนเงิน/ชำระบัญชี', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: 'หน้าของฉัน', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: 'ประวัติคำสั่งซื้อ', desc: 'คำสั่งซื้อ/การคืนเงิน', icon: 'fa-receipt' },
+            { id: 'coupons', name: 'คูปองของฉัน', desc: 'การจัดการคูปอง', icon: 'fa-tags' },
+            { id: 'balance', name: 'ยอดเงินท้องถิ่น', desc: 'ยอดเงินแบบเรียลไทม์', icon: 'fa-coins' },
+            { id: 'favorites', name: 'รายการโปรด', desc: 'ร้านค้าที่ชื่นชอบ', icon: 'fa-heart' },
+            { id: 'support', name: 'ฝ่ายสนับสนุน', desc: 'สอบถาม/คำถามที่พบบ่อย', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: 'ศูนย์พ่อค้า', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: 'จัดการข้อมูลร้านค้า', desc: 'การรับรองธุรกิจ, เวลาทำการ', icon: 'fa-info-circle' },
+            { id: 'menu', name: 'จัดการเมนู (OCR)', desc: 'รู้จักภาพ·ราคาอัตโนมัติ', icon: 'fa-camera' },
+            { id: 'pos', name: 'การรวม POS', desc: 'รับคำสั่งซื้ออัตโนมัติ', icon: 'fa-cash-register' },
+            { id: 'orders', name: 'จัดการคำสั่งซื้อ·การส่ง', desc: 'ประมวลผลคำสั่งซื้อแบบเรียลไทม์', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: 'ยอดขาย·สถิติ', desc: 'วิเคราะห์ตามวัน/เวลา', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: 'การจัดการชำระบัญชี', desc: 'ค่าธรรมเนียม 1~2%, ชำระบัญชีวันถัดไป', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: 'แดชบอร์ดผู้ดูแลระบบ', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: 'แดชบอร์ดนโยบาย', desc: 'แสดงภาพตัวชี้วัดเศรษฐกิจท้องถิ่น', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: 'การวิเคราะห์ข้อมูล', desc: 'ตัวชี้วัดการเปิดใช้งานย่านการค้า', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: 'ออกคูปองสาธารณะ', desc: 'ระบบออกคูปอง', icon: 'fa-gift' },
+            { id: 'notice', name: 'แบบสำรวจ·ประกาศ', desc: 'ประกาศเร่งด่วน/แบบสำรวจนโยบาย', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: 'การจัดการพ่อค้า', desc: 'การอนุมัติ/การจัดการพ่อค้า', icon: 'fa-store-alt' },
+            { id: 'delivery', name: 'การจัดการการจัดส่ง', desc: 'การทำแผนที่ GPS แบบเรียลไทม์', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    },
+    ar: {
+      mainMenu: [
+        { id: 'home', name: 'الرئيسية', icon: 'fa-home', path: '/' },
+        {
+          id: 'nearby', name: 'المتاجر القريبة·التوصيل', icon: 'fa-motorcycle', path: '/nearby',
+          subMenu: [
+            { id: 'delivery', name: 'توصيل الطعام', desc: 'التوصيل/الطلبات الخارجية/الحجز', icon: 'fa-utensils' },
+            { id: 'takeout', name: 'طلب الاستلام', desc: 'خدمة الاستلام', icon: 'fa-shopping-bag' },
+            { id: 'reservation', name: 'الحجز المسبق', desc: 'الطلب المسبق', icon: 'fa-clock' },
+            { id: 'categories', name: 'فئات المتاجر', desc: 'طعام محلي/مقهى/سوبر ماركت', icon: 'fa-th-large' }
+          ]
+        },
+        {
+          id: 'market', name: 'التسوق·الأسواق التقليدية', icon: 'fa-shopping-basket', path: '/market',
+          subMenu: [
+            { id: 'traditional', name: 'الأسواق التقليدية', desc: 'فئات السوق', icon: 'fa-store-alt' },
+            { id: 'combined', name: 'التوصيل المشترك', desc: 'نظام التوصيل المجمع', icon: 'fa-boxes' },
+            { id: 'local', name: 'المنتجات المحلية', desc: 'التجارة المباشرة للمنتجات المحلية', icon: 'fa-leaf' },
+            { id: 'coupon', name: 'كوبونات السوق', desc: 'كوبونات صادرة عن الحكومة', icon: 'fa-ticket-alt' }
+          ]
+        },
+        {
+          id: 'group', name: 'الشراء الجماعي', icon: 'fa-users', path: '/group',
+          subMenu: [
+            { id: 'ongoing', name: 'قيد التنفيذ', desc: 'عرض معدل المشاركة في الوقت الفعلي', icon: 'fa-hourglass-half' },
+            { id: 'completed', name: 'المكتمل', desc: 'تاريخ الشراء الجماعي المكتمل', icon: 'fa-check-circle' }
+          ]
+        },
+        {
+          id: 'events', name: 'الفعاليات المحلية·المهرجانات', icon: 'fa-calendar-alt', path: '/events',
+          subMenu: [
+            { id: 'list', name: 'قائمة الفعاليات', desc: 'معلومات المهرجانات المحلية', icon: 'fa-list' },
+            { id: 'tickets', name: 'تذاكر الفعاليات', desc: 'شراء تذاكر O2O', icon: 'fa-ticket-alt' },
+            { id: 'stamp', name: 'جولة الأختام', desc: 'جولة الأختام المستندة إلى GPS', icon: 'fa-stamp' }
+          ]
+        },
+        {
+          id: 'payment', name: 'العملة المحلية', icon: 'fa-credit-card', path: '/payment',
+          subMenu: [
+            { id: 'register', name: 'تسجيل العملة', desc: 'التسجيل عبر الجوال/البطاقة', icon: 'fa-id-card' },
+            { id: 'balance', name: 'التحقق من الرصيد', desc: 'التحقق من الرصيد في الوقت الفعلي', icon: 'fa-wallet' },
+            { id: 'history', name: 'سجل الدفع', desc: 'الاستعلام عن سجل المعاملات', icon: 'fa-history' },
+            { id: 'settlement', name: 'التسوية', desc: 'تفاصيل الاسترداد النقدي/التسوية', icon: 'fa-file-invoice-dollar' }
+          ]
+        },
+        {
+          id: 'mypage', name: 'صفحتي', icon: 'fa-user', path: '/mypage',
+          subMenu: [
+            { id: 'orders', name: 'سجل الطلبات', desc: 'الطلبات/المبالغ المستردة', icon: 'fa-receipt' },
+            { id: 'coupons', name: 'كوبوناتي', desc: 'إدارة الكوبونات', icon: 'fa-tags' },
+            { id: 'balance', name: 'رصيد العملة', desc: 'الرصيد في الوقت الفعلي', icon: 'fa-coins' },
+            { id: 'favorites', name: 'المفضلة', desc: 'المتاجر المفضلة', icon: 'fa-heart' },
+            { id: 'support', name: 'الدعم', desc: 'الاستفسارات/الأسئلة الشائعة', icon: 'fa-headset' }
+          ]
+        },
+        {
+          id: 'merchant', name: 'مركز التاجر', icon: 'fa-store', path: '/merchant',
+          subMenu: [
+            { id: 'info', name: 'إدارة معلومات المتجر', desc: 'شهادة الأعمال، ساعات العمل', icon: 'fa-info-circle' },
+            { id: 'menu', name: 'إدارة القائمة (OCR)', desc: 'التعرف التلقائي على الصورة·السعر', icon: 'fa-camera' },
+            { id: 'pos', name: 'تكامل نقاط البيع', desc: 'استقبال الطلبات التلقائي', icon: 'fa-cash-register' },
+            { id: 'orders', name: 'إدارة الطلبات·الإرسال', desc: 'معالجة الطلبات في الوقت الفعلي', icon: 'fa-clipboard-list' },
+            { id: 'stats', name: 'المبيعات·الإحصائيات', desc: 'التحليل حسب اليوم/الوقت', icon: 'fa-chart-bar' },
+            { id: 'settlement', name: 'إدارة التسوية', desc: 'رسوم 1~2%، التسوية في اليوم التالي', icon: 'fa-calculator' }
+          ]
+        },
+        {
+          id: 'admin', name: 'لوحة تحكم المسؤول', icon: 'fa-shield-alt', path: '/admin',
+          subMenu: [
+            { id: 'dashboard', name: 'لوحة معلومات السياسة', desc: 'تصور مؤشرات الاقتصاد المحلي', icon: 'fa-tachometer-alt' },
+            { id: 'analysis', name: 'تحليل البيانات', desc: 'مؤشرات تفعيل المنطقة التجارية', icon: 'fa-chart-pie' },
+            { id: 'coupons', name: 'إصدار الكوبونات العامة', desc: 'نظام إصدار الكوبونات', icon: 'fa-gift' },
+            { id: 'notice', name: 'الاستطلاعات·الإشعارات', desc: 'الإشعارات العاجلة/استطلاعات السياسة', icon: 'fa-bullhorn' },
+            { id: 'merchants', name: 'إدارة التجار', desc: 'الموافقة على التجار/الإدارة', icon: 'fa-store-alt' },
+            { id: 'delivery', name: 'إدارة التوصيل', desc: 'رسم خرائط GPS في الوقت الفعلي', icon: 'fa-truck' }
+          ]
+        }
+      ]
+    }
   }
   
+  const menuData = menuTranslations[lang] || menuTranslations['ko']
   return c.json(menuData)
 })
 

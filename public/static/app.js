@@ -229,6 +229,9 @@ function initPlatformLanguage() {
       // Also update chatbot language
       updateChatbotLanguage(selectedLang);
       
+      // Reload menu for new language
+      loadMenu();
+      
       // Reload FAQ for new language
       if (faqData) {
         loadFAQ(selectedLang);
@@ -288,9 +291,9 @@ function updatePlatformLanguage(lang) {
 
 // Load menu from API
 function loadMenu() {
-  console.log('Loading menu...');
+  console.log('Loading menu with language:', currentLang);
   
-  fetch('/api/menu')
+  fetch('/api/menu?lang=' + currentLang)
     .then(function(response) {
       return response.json();
     })
@@ -323,9 +326,14 @@ function renderMainNav() {
           <div class="nav-dropdown">
             ${item.subMenu.map(function(sub) {
               return `
-                <div class="nav-dropdown-item flex items-center gap-3">
-                  <i class="fas ${sub.icon} text-purple-600"></i>
-                  <span>${sub.name}</span>
+                <div class="nav-dropdown-item">
+                  <div class="flex items-start gap-3">
+                    <i class="fas ${sub.icon} text-purple-600 mt-1"></i>
+                    <div>
+                      <div class="font-medium">${sub.name}</div>
+                      ${sub.desc ? `<div class="text-xs text-gray-500 mt-1">${sub.desc}</div>` : ''}
+                    </div>
+                  </div>
                 </div>
               `;
             }).join('')}
