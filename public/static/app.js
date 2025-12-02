@@ -41,39 +41,58 @@ const translations = {
   }
 };
 
-// Initialize chatbot
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize chatbot when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, initializing chatbot...');
+  
   const chatbotBtn = document.getElementById('chatbotBtn');
   const chatbotPanel = document.getElementById('chatbotPanel');
   const closeChatbot = document.getElementById('closeChatbot');
   const langButtons = document.querySelectorAll('.lang-btn');
   
+  if (!chatbotBtn || !chatbotPanel || !closeChatbot) {
+    console.error('Chatbot elements not found');
+    return;
+  }
+  
   // Toggle chatbot panel
-  chatbotBtn.addEventListener('click', () => {
-    chatbotPanel.classList.toggle('active');
-    if (chatbotPanel.classList.contains('active') && !faqData) {
+  chatbotBtn.addEventListener('click', function() {
+    console.log('Chatbot button clicked');
+    const isActive = chatbotPanel.classList.toggle('active');
+    console.log('Panel active:', isActive);
+    
+    if (isActive && !faqData) {
+      console.log('Loading FAQ for first time');
       loadFAQ(currentLang);
     }
   });
   
-  closeChatbot.addEventListener('click', () => {
+  // Close chatbot
+  closeChatbot.addEventListener('click', function() {
+    console.log('Close button clicked');
     chatbotPanel.classList.remove('active');
   });
   
   // Language selection
-  langButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      langButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentLang = btn.dataset.lang;
+  langButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      console.log('Language button clicked:', this.dataset.lang);
+      
+      langButtons.forEach(function(b) {
+        b.classList.remove('active');
+      });
+      
+      this.classList.add('active');
+      currentLang = this.dataset.lang;
+      
       loadFAQ(currentLang);
       updateChatbotUI();
     });
   });
   
   // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
@@ -84,71 +103,97 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+  
+  console.log('Chatbot initialized successfully');
 });
 
 // Update chatbot UI based on language
 function updateChatbotUI() {
+  console.log('Updating chatbot UI for language:', currentLang);
+  
   const trans = translations[currentLang] || translations.ko;
   
   // Update header
   const header = document.querySelector('.chatbot-header');
   if (header) {
-    header.querySelector('h3').textContent = trans.chatbotTitle;
-    header.querySelector('p').textContent = trans.chatbotSubtitle;
+    const titleEl = header.querySelector('h3');
+    const subtitleEl = header.querySelector('p');
+    
+    if (titleEl) titleEl.textContent = trans.chatbotTitle;
+    if (subtitleEl) subtitleEl.textContent = trans.chatbotSubtitle;
   }
   
   // Update welcome message
   const messages = document.getElementById('chatbotMessages');
   if (messages) {
-    messages.innerHTML = `
-      <div class="message bot">
-        ${trans.welcomeMessage}
-      </div>
-    `;
+    messages.innerHTML = '<div class="message bot">' + trans.welcomeMessage + '</div>';
   }
 }
 
-// Load FAQ data
-async function loadFAQ(lang) {
-  try {
-    const response = await fetch(`/api/faq?lang=${lang}`);
-    faqData = await response.json();
-    renderFAQ();
-  } catch (error) {
-    console.error('Failed to load FAQ:', error);
-  }
+// Load FAQ data from API
+function loadFAQ(lang) {
+  console.log('Loading FAQ for language:', lang);
+  
+  fetch('/api/faq?lang=' + lang)
+    .then(function(response) {
+      console.log('FAQ API response status:', response.status);
+      return response.json();
+    })
+    .then(function(data) {
+      console.log('FAQ data loaded:', data);
+      faqData = data;
+      renderFAQ();
+    })
+    .catch(function(error) {
+      console.error('Failed to load FAQ:', error);
+    });
 }
 
 // Render FAQ items
 function renderFAQ() {
+  console.log('Rendering FAQ...');
+  
   const faqList = document.getElementById('faqList');
-  if (!faqData || !faqData.questions) {
-    console.log('No FAQ data available');
+  if (!faqList) {
+    console.error('FAQ list element not found');
     return;
   }
   
-  console.log('Rendering FAQ with', faqData.questions.length, 'questions');
+  if (!faqData || !faqData.questions) {
+    console.error('No FAQ data available');
+    return;
+  }
   
-  faqList.innerHTML = faqData.questions.map((item, index) => `
-    <div class="faq-item" data-index="${index}">
-      <i class="fas fa-question-circle mr-2 text-purple-600"></i>
-      ${item.q}
-    </div>
-  `).join('');
+  console.log('Rendering', faqData.questions.length, 'FAQ items');
   
-  // Add click handlers with a slight delay to ensure DOM is ready
-  setTimeout(() => {
-    const faqItems = faqList.querySelectorAll('.faq-item');
-    console.log('Found', faqItems.length, 'FAQ items');
+  // Clear existing content
+  faqList.innerHTML = '';
+  
+  // Create FAQ items
+  faqData.questions.forEach(function(item, index) {
+    const faqItem = document.createElement('div');
+    faqItem.className = 'faq-item';
+    faqItem.setAttribute('data-index', index);
     
-    faqItems.forEach(item => {
-      item.addEventListener('click', function() {
-        const index = parseInt(this.dataset.index);
-        console.log('Clicked FAQ item index:', index);
-        showAnswer(index);
-      });
+    const icon = document.createElement('i');
+    icon.className = 'fas fa-question-circle mr-2 text-purple-600';
+    
+    const text = document.createTextNode(item.q);
+    
+    faqItem.appendChild(icon);
+    faqItem.appendChild(text);
+    
+    // Add click event
+    faqItem.addEventListener('click', function() {
+      const idx = parseInt(this.getAttribute('data-index'));
+      console.log('FAQ item clicked, index:', idx);
+      showAnswer(idx);
     });
-  }, 100);
+    
+    faqList.appendChild(faqItem);
+  });
+  
+  console.log('FAQ items rendered successfully');
 }
 
 // Show answer in chat
@@ -160,15 +205,20 @@ function showAnswer(index) {
     return;
   }
   
-  if (!faqData.questions[index]) {
-    console.error('Invalid index:', index);
+  const question = faqData.questions[index];
+  if (!question) {
+    console.error('Invalid question index:', index);
     return;
   }
   
-  const messages = document.getElementById('chatbotMessages');
-  const question = faqData.questions[index];
+  console.log('Question:', question.q);
+  console.log('Answer:', question.a);
   
-  console.log('Showing answer for:', question.q);
+  const messages = document.getElementById('chatbotMessages');
+  if (!messages) {
+    console.error('Messages container not found');
+    return;
+  }
   
   // Add user message
   const userMsg = document.createElement('div');
@@ -176,18 +226,26 @@ function showAnswer(index) {
   userMsg.textContent = question.q;
   messages.appendChild(userMsg);
   
-  // Scroll to bottom after user message
+  console.log('User message added');
+  
+  // Scroll to bottom
   messages.scrollTop = messages.scrollHeight;
   
   // Add bot response with delay
-  setTimeout(() => {
+  setTimeout(function() {
     const botMsg = document.createElement('div');
     botMsg.className = 'message bot';
-    botMsg.innerHTML = question.a.replace(/\n/g, '<br>');
+    
+    // Replace newlines with <br> tags
+    const answerHtml = question.a.replace(/\n/g, '<br>');
+    botMsg.innerHTML = answerHtml;
+    
     messages.appendChild(botMsg);
     
-    // Scroll to bottom after bot message
-    setTimeout(() => {
+    console.log('Bot message added');
+    
+    // Scroll to bottom again
+    setTimeout(function() {
       messages.scrollTop = messages.scrollHeight;
     }, 100);
   }, 500);
@@ -199,13 +257,13 @@ const observerOptions = {
   rootMargin: '0px 0px -50px 0px'
 };
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+const observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
     if (entry.isIntersecting) {
       entry.target.style.opacity = '0';
       entry.target.style.transform = 'translateY(20px)';
       
-      setTimeout(() => {
+      setTimeout(function() {
         entry.target.style.transition = 'all 0.6s ease';
         entry.target.style.opacity = '1';
         entry.target.style.transform = 'translateY(0)';
@@ -216,9 +274,9 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-// Observe all cards
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.card-hover').forEach(card => {
+// Observe all cards when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.card-hover').forEach(function(card) {
     observer.observe(card);
   });
 });
