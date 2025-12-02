@@ -91,10 +91,11 @@
 - 드롭다운 네비게이션
 - 모바일 반응형 메뉴
 
-### 2. 다국어 지원 챗봇
-- 한국어, 영어, 중국어, 일본어, 베트남어, 태국어, 아랍어
-- FAQ 기반 자동 응답
-- 실시간 메시지 표시
+### 2. 완전한 다국어 지원
+- **7개 언어**: 한국어, English, 中文, 日本語, Tiếng Việt, ไทย, العربية
+- **플랫폼 전체 번역**: Hero 섹션, 메뉴, 버튼, 설명 모두 번역
+- **챗봇 다국어**: FAQ 질문/답변, 환영 메시지 완전 번역
+- **헤더 언어 선택기**: 한 번 클릭으로 전체 플랫폼 언어 전환
 
 ### 3. 세련된 UI/UX
 - 그라디언트 디자인
@@ -197,7 +198,18 @@ FAQ 데이터를 반환합니다.
 
 ## 🌐 접속 URL
 
+**프로덕션**: https://meditour.me  
+**프로덕션 (Cloudflare)**: https://meditour-korea.pages.dev  
 **개발 서버**: https://3000-ip8b523hmiqtqidta5sor-c07dda5e.sandbox.novita.ai
+
+## 🔄 배포 정보
+
+**GitHub**: https://github.com/langsb16-collab/Benefit  
+**Cloudflare Pages 프로젝트**: meditour-korea  
+**커스텀 도메인**: meditour.me
+
+**마지막 배포**: 2025-01-02  
+**버전**: v1.0.0
 
 ## 📂 프로젝트 구조
 
