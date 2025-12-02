@@ -1,8 +1,9 @@
-// Chatbot functionality
+// Global variables
 let currentLang = 'ko';
 let faqData = null;
+let menuData = null;
 
-// Language translations for UI
+// Language translations
 const translations = {
   ko: {
     chatbotTitle: 'Benefit 챗봇',
@@ -13,130 +14,221 @@ const translations = {
     chatbotTitle: 'Benefit Chatbot',
     chatbotSubtitle: 'How can I help you?',
     welcomeMessage: 'Hello! I\'m the Benefit platform assistant. Please select a question.'
-  },
-  zh: {
-    chatbotTitle: 'Benefit 聊天机器人',
-    chatbotSubtitle: '我能帮您什么？',
-    welcomeMessage: '您好！我是Benefit平台助手。请选择一个问题。'
-  },
-  ja: {
-    chatbotTitle: 'Benefit チャットボット',
-    chatbotSubtitle: 'どのようにお手伝いしましょうか？',
-    welcomeMessage: 'こんにちは！Benefitプラットフォームアシスタントです。質問を選択してください。'
-  },
-  vi: {
-    chatbotTitle: 'Benefit Chatbot',
-    chatbotSubtitle: 'Tôi có thể giúp gì cho bạn?',
-    welcomeMessage: 'Xin chào! Tôi là trợ lý nền tảng Benefit. Vui lòng chọn câu hỏi.'
-  },
-  th: {
-    chatbotTitle: 'Benefit Chatbot',
-    chatbotSubtitle: 'ฉันช่วยอะไรคุณได้บ้าง?',
-    welcomeMessage: 'สวัสดี! ฉันเป็นผู้ช่วยแพลตฟอร์ม Benefit กรุณาเลือกคำถาม'
-  },
-  ar: {
-    chatbotTitle: 'Benefit Chatbot',
-    chatbotSubtitle: 'كيف يمكنني مساعدتك؟',
-    welcomeMessage: 'مرحباً! أنا مساعد منصة Benefit. يرجى اختيار سؤال.'
   }
 };
 
-// Initialize chatbot when DOM is ready
+// Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded, initializing chatbot...');
+  console.log('Initializing app...');
   
+  // Load menu data
+  loadMenu();
+  
+  // Initialize chatbot
+  initChatbot();
+  
+  // Initialize mobile menu
+  initMobileMenu();
+  
+  // Smooth scrolling
+  initSmoothScroll();
+});
+
+// Load menu from API
+function loadMenu() {
+  console.log('Loading menu...');
+  
+  fetch('/api/menu')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      console.log('Menu data loaded:', data);
+      menuData = data;
+      renderMainNav();
+      renderQuickMenu();
+      renderFeaturesGrid();
+    })
+    .catch(function(error) {
+      console.error('Failed to load menu:', error);
+    });
+}
+
+// Render main navigation
+function renderMainNav() {
+  const navEl = document.getElementById('mainNav');
+  if (!navEl || !menuData) return;
+  
+  const navHTML = menuData.mainMenu.map(function(item) {
+    if (item.subMenu) {
+      return `
+        <div class="nav-item relative px-3 py-2">
+          <button class="text-white hover:text-gray-200 flex items-center gap-2">
+            <i class="fas ${item.icon}"></i>
+            <span>${item.name}</span>
+            <i class="fas fa-chevron-down text-xs"></i>
+          </button>
+          <div class="nav-dropdown">
+            ${item.subMenu.map(function(sub) {
+              return `
+                <div class="nav-dropdown-item flex items-center gap-3">
+                  <i class="fas ${sub.icon} text-purple-600"></i>
+                  <span>${sub.name}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <a href="${item.path}" class="px-3 py-2 text-white hover:text-gray-200 flex items-center gap-2">
+          <i class="fas ${item.icon}"></i>
+          <span>${item.name}</span>
+        </a>
+      `;
+    }
+  }).join('');
+  
+  navEl.innerHTML = navHTML;
+}
+
+// Render quick menu cards
+function renderQuickMenu() {
+  const quickMenuEl = document.getElementById('quickMenu');
+  if (!quickMenuEl || !menuData) return;
+  
+  // Show first 4 main services
+  const quickItems = menuData.mainMenu.slice(1, 5);
+  
+  const quickHTML = quickItems.map(function(item, index) {
+    const gradients = [
+      'gradient-bg',
+      'gradient-bg-2',
+      'gradient-bg-3',
+      'gradient-bg'
+    ];
+    
+    return `
+      <div class="quick-menu-card">
+        <div class="quick-menu-icon ${gradients[index]}">
+          <i class="fas ${item.icon} text-white"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">${item.name}</h3>
+        <p class="text-gray-600 text-sm">
+          ${item.subMenu ? item.subMenu.length + '개 서비스' : '바로 시작'}
+        </p>
+      </div>
+    `;
+  }).join('');
+  
+  quickMenuEl.innerHTML = quickHTML;
+}
+
+// Render features grid
+function renderFeaturesGrid() {
+  const featuresEl = document.getElementById('featuresGrid');
+  if (!featuresEl || !menuData) return;
+  
+  // Show services with submenus
+  const features = menuData.mainMenu.filter(function(item) {
+    return item.subMenu && item.subMenu.length > 0;
+  });
+  
+  const gradients = [
+    'gradient-bg',
+    'gradient-bg-2',
+    'gradient-bg-3',
+    'gradient-bg',
+    'gradient-bg-2',
+    'gradient-bg-3'
+  ];
+  
+  const featuresHTML = features.map(function(item, index) {
+    return `
+      <div class="feature-card">
+        <div class="feature-header">
+          <div class="feature-icon ${gradients[index % gradients.length]}">
+            <i class="fas ${item.icon}"></i>
+          </div>
+          <h3 class="text-xl font-bold">${item.name}</h3>
+        </div>
+        <ul class="submenu-list">
+          ${item.subMenu.map(function(sub) {
+            return `
+              <li class="submenu-item">
+                <i class="fas ${sub.icon}"></i>
+                <span>${sub.name}</span>
+              </li>
+            `;
+          }).join('')}
+        </ul>
+      </div>
+    `;
+  }).join('');
+  
+  featuresEl.innerHTML = featuresHTML;
+}
+
+// Initialize chatbot
+function initChatbot() {
   const chatbotBtn = document.getElementById('chatbotBtn');
   const chatbotPanel = document.getElementById('chatbotPanel');
   const closeChatbot = document.getElementById('closeChatbot');
   const langButtons = document.querySelectorAll('.lang-btn');
   
-  if (!chatbotBtn || !chatbotPanel || !closeChatbot) {
-    console.error('Chatbot elements not found');
-    return;
-  }
+  if (!chatbotBtn || !chatbotPanel) return;
   
-  // Toggle chatbot panel
   chatbotBtn.addEventListener('click', function() {
-    console.log('Chatbot button clicked');
-    const isActive = chatbotPanel.classList.toggle('active');
-    console.log('Panel active:', isActive);
-    
-    if (isActive && !faqData) {
-      console.log('Loading FAQ for first time');
+    chatbotPanel.classList.toggle('active');
+    if (chatbotPanel.classList.contains('active') && !faqData) {
       loadFAQ(currentLang);
     }
   });
   
-  // Close chatbot
-  closeChatbot.addEventListener('click', function() {
-    console.log('Close button clicked');
-    chatbotPanel.classList.remove('active');
-  });
+  if (closeChatbot) {
+    closeChatbot.addEventListener('click', function() {
+      chatbotPanel.classList.remove('active');
+    });
+  }
   
-  // Language selection
   langButtons.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      console.log('Language button clicked:', this.dataset.lang);
-      
       langButtons.forEach(function(b) {
         b.classList.remove('active');
       });
-      
       this.classList.add('active');
       currentLang = this.dataset.lang;
-      
       loadFAQ(currentLang);
       updateChatbotUI();
     });
   });
-  
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
-  });
-  
-  console.log('Chatbot initialized successfully');
-});
+}
 
-// Update chatbot UI based on language
+// Update chatbot UI
 function updateChatbotUI() {
-  console.log('Updating chatbot UI for language:', currentLang);
-  
   const trans = translations[currentLang] || translations.ko;
   
-  // Update header
   const header = document.querySelector('.chatbot-header');
   if (header) {
     const titleEl = header.querySelector('h3');
     const subtitleEl = header.querySelector('p');
-    
     if (titleEl) titleEl.textContent = trans.chatbotTitle;
     if (subtitleEl) subtitleEl.textContent = trans.chatbotSubtitle;
   }
   
-  // Update welcome message
   const messages = document.getElementById('chatbotMessages');
   if (messages) {
     messages.innerHTML = '<div class="message bot">' + trans.welcomeMessage + '</div>';
   }
 }
 
-// Load FAQ data from API
+// Load FAQ data
 function loadFAQ(lang) {
   console.log('Loading FAQ for language:', lang);
   
   fetch('/api/faq?lang=' + lang)
     .then(function(response) {
-      console.log('FAQ API response status:', response.status);
       return response.json();
     })
     .then(function(data) {
@@ -151,25 +243,11 @@ function loadFAQ(lang) {
 
 // Render FAQ items
 function renderFAQ() {
-  console.log('Rendering FAQ...');
-  
   const faqList = document.getElementById('faqList');
-  if (!faqList) {
-    console.error('FAQ list element not found');
-    return;
-  }
+  if (!faqList || !faqData || !faqData.questions) return;
   
-  if (!faqData || !faqData.questions) {
-    console.error('No FAQ data available');
-    return;
-  }
-  
-  console.log('Rendering', faqData.questions.length, 'FAQ items');
-  
-  // Clear existing content
   faqList.innerHTML = '';
   
-  // Create FAQ items
   faqData.questions.forEach(function(item, index) {
     const faqItem = document.createElement('div');
     faqItem.className = 'faq-item';
@@ -183,75 +261,112 @@ function renderFAQ() {
     faqItem.appendChild(icon);
     faqItem.appendChild(text);
     
-    // Add click event
     faqItem.addEventListener('click', function() {
       const idx = parseInt(this.getAttribute('data-index'));
-      console.log('FAQ item clicked, index:', idx);
       showAnswer(idx);
     });
     
     faqList.appendChild(faqItem);
   });
-  
-  console.log('FAQ items rendered successfully');
 }
 
 // Show answer in chat
 function showAnswer(index) {
-  console.log('showAnswer called with index:', index);
-  
-  if (!faqData || !faqData.questions) {
-    console.error('No FAQ data available');
-    return;
-  }
+  if (!faqData || !faqData.questions || !faqData.questions[index]) return;
   
   const question = faqData.questions[index];
-  if (!question) {
-    console.error('Invalid question index:', index);
-    return;
-  }
-  
-  console.log('Question:', question.q);
-  console.log('Answer:', question.a);
-  
   const messages = document.getElementById('chatbotMessages');
-  if (!messages) {
-    console.error('Messages container not found');
-    return;
-  }
+  if (!messages) return;
   
-  // Add user message
+  // User message
   const userMsg = document.createElement('div');
   userMsg.className = 'message user';
   userMsg.textContent = question.q;
   messages.appendChild(userMsg);
   
-  console.log('User message added');
-  
-  // Scroll to bottom
   messages.scrollTop = messages.scrollHeight;
   
-  // Add bot response with delay
+  // Bot response
   setTimeout(function() {
     const botMsg = document.createElement('div');
     botMsg.className = 'message bot';
-    
-    // Replace newlines with <br> tags
-    const answerHtml = question.a.replace(/\n/g, '<br>');
-    botMsg.innerHTML = answerHtml;
-    
+    botMsg.innerHTML = question.a.replace(/\n/g, '<br>');
     messages.appendChild(botMsg);
     
-    console.log('Bot message added');
-    
-    // Scroll to bottom again
     setTimeout(function() {
       messages.scrollTop = messages.scrollHeight;
     }, 100);
   }, 500);
 }
 
-// Add scroll animation for cards
+// Initialize mobile menu
+function initMobileMenu() {
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (!mobileMenuBtn || !mobileMenu) return;
+  
+  mobileMenuBtn.addEventListener('click', function() {
+    if (mobileMenu.classList.contains('hidden')) {
+      mobileMenu.classList.remove('hidden');
+      renderMobileMenu();
+    } else {
+      mobileMenu.classList.add('hidden');
+    }
+  });
+}
+
+// Render mobile menu
+function renderMobileMenu() {
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (!mobileMenu || !menuData) return;
+  
+  const mobileHTML = menuData.mainMenu.map(function(item) {
+    let html = `
+      <div class="border-b border-purple-700">
+        <a href="${item.path || '#'}" class="block px-4 py-3 text-white hover:bg-purple-700 flex items-center gap-3">
+          <i class="fas ${item.icon}"></i>
+          <span>${item.name}</span>
+        </a>
+    `;
+    
+    if (item.subMenu) {
+      html += '<div class="bg-purple-900 px-8 py-2">';
+      item.subMenu.forEach(function(sub) {
+        html += `
+          <a href="#" class="block py-2 text-sm text-gray-300 hover:text-white flex items-center gap-2">
+            <i class="fas ${sub.icon} text-xs"></i>
+            <span>${sub.name}</span>
+          </a>
+        `;
+      });
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    return html;
+  }).join('');
+  
+  mobileMenu.innerHTML = mobileHTML;
+}
+
+// Initialize smooth scrolling
+function initSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+}
+
+// Add scroll animation observer
 const observerOptions = {
   threshold: 0.1,
   rootMargin: '0px 0px -50px 0px'
@@ -274,9 +389,11 @@ const observer = new IntersectionObserver(function(entries) {
   });
 }, observerOptions);
 
-// Observe all cards when DOM is ready
+// Observe cards when loaded
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.card-hover').forEach(function(card) {
-    observer.observe(card);
-  });
+  setTimeout(function() {
+    document.querySelectorAll('.card-hover, .quick-menu-card, .feature-card').forEach(function(card) {
+      observer.observe(card);
+    });
+  }, 500);
 });
