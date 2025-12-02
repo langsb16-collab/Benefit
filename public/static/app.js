@@ -122,7 +122,12 @@ async function loadFAQ(lang) {
 // Render FAQ items
 function renderFAQ() {
   const faqList = document.getElementById('faqList');
-  if (!faqData || !faqData.questions) return;
+  if (!faqData || !faqData.questions) {
+    console.log('No FAQ data available');
+    return;
+  }
+  
+  console.log('Rendering FAQ with', faqData.questions.length, 'questions');
   
   faqList.innerHTML = faqData.questions.map((item, index) => `
     <div class="faq-item" data-index="${index}">
@@ -131,21 +136,39 @@ function renderFAQ() {
     </div>
   `).join('');
   
-  // Add click handlers
-  faqList.querySelectorAll('.faq-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const index = parseInt(item.dataset.index);
-      showAnswer(index);
+  // Add click handlers with a slight delay to ensure DOM is ready
+  setTimeout(() => {
+    const faqItems = faqList.querySelectorAll('.faq-item');
+    console.log('Found', faqItems.length, 'FAQ items');
+    
+    faqItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        console.log('Clicked FAQ item index:', index);
+        showAnswer(index);
+      });
     });
-  });
+  }, 100);
 }
 
 // Show answer in chat
 function showAnswer(index) {
-  if (!faqData || !faqData.questions[index]) return;
+  console.log('showAnswer called with index:', index);
+  
+  if (!faqData || !faqData.questions) {
+    console.error('No FAQ data available');
+    return;
+  }
+  
+  if (!faqData.questions[index]) {
+    console.error('Invalid index:', index);
+    return;
+  }
   
   const messages = document.getElementById('chatbotMessages');
   const question = faqData.questions[index];
+  
+  console.log('Showing answer for:', question.q);
   
   // Add user message
   const userMsg = document.createElement('div');
@@ -153,19 +176,21 @@ function showAnswer(index) {
   userMsg.textContent = question.q;
   messages.appendChild(userMsg);
   
-  // Add bot response
+  // Scroll to bottom after user message
+  messages.scrollTop = messages.scrollHeight;
+  
+  // Add bot response with delay
   setTimeout(() => {
     const botMsg = document.createElement('div');
     botMsg.className = 'message bot';
     botMsg.innerHTML = question.a.replace(/\n/g, '<br>');
     messages.appendChild(botMsg);
     
-    // Scroll to bottom
-    messages.scrollTop = messages.scrollHeight;
+    // Scroll to bottom after bot message
+    setTimeout(() => {
+      messages.scrollTop = messages.scrollHeight;
+    }, 100);
   }, 500);
-  
-  // Scroll to bottom
-  messages.scrollTop = messages.scrollHeight;
 }
 
 // Add scroll animation for cards
