@@ -172,37 +172,60 @@ function renderFeaturesGrid() {
 
 // Initialize chatbot
 function initChatbot() {
+  console.log('=== Initializing chatbot...');
+  
   const chatbotBtn = document.getElementById('chatbotBtn');
   const chatbotPanel = document.getElementById('chatbotPanel');
   const closeChatbot = document.getElementById('closeChatbot');
   const langButtons = document.querySelectorAll('.lang-btn');
   
-  if (!chatbotBtn || !chatbotPanel) return;
+  console.log('Chatbot elements found:', {
+    chatbotBtn: !!chatbotBtn,
+    chatbotPanel: !!chatbotPanel,
+    closeChatbot: !!closeChatbot,
+    langButtons: langButtons.length
+  });
+  
+  if (!chatbotBtn || !chatbotPanel) {
+    console.error('!!! Chatbot elements not found');
+    return;
+  }
   
   chatbotBtn.addEventListener('click', function() {
+    console.log('Chatbot button clicked');
     chatbotPanel.classList.toggle('active');
-    if (chatbotPanel.classList.contains('active') && !faqData) {
+    const isActive = chatbotPanel.classList.contains('active');
+    console.log('Panel is now active:', isActive);
+    
+    if (isActive && !faqData) {
+      console.log('Loading FAQ on first open...');
       loadFAQ(currentLang);
     }
   });
   
   if (closeChatbot) {
     closeChatbot.addEventListener('click', function() {
+      console.log('Close button clicked');
       chatbotPanel.classList.remove('active');
     });
   }
   
   langButtons.forEach(function(btn) {
     btn.addEventListener('click', function() {
+      console.log('Language button clicked:', this.dataset.lang);
+      
       langButtons.forEach(function(b) {
         b.classList.remove('active');
       });
       this.classList.add('active');
       currentLang = this.dataset.lang;
+      
       loadFAQ(currentLang);
       updateChatbotUI();
     });
   });
+  
+  console.log('=== Chatbot initialized successfully');
 }
 
 // Update chatbot UI
@@ -225,58 +248,99 @@ function updateChatbotUI() {
 
 // Load FAQ data
 function loadFAQ(lang) {
-  console.log('Loading FAQ for language:', lang);
+  console.log('=== Loading FAQ for language:', lang);
   
   fetch('/api/faq?lang=' + lang)
     .then(function(response) {
+      console.log('FAQ API response status:', response.status);
+      if (!response.ok) {
+        throw new Error('API response not OK: ' + response.status);
+      }
       return response.json();
     })
     .then(function(data) {
-      console.log('FAQ data loaded:', data);
+      console.log('=== FAQ data loaded successfully:', data);
+      console.log('Number of questions:', data.questions ? data.questions.length : 0);
       faqData = data;
       renderFAQ();
     })
     .catch(function(error) {
-      console.error('Failed to load FAQ:', error);
+      console.error('!!! Failed to load FAQ:', error);
+      
+      // Show error in FAQ list
+      const faqList = document.getElementById('faqList');
+      if (faqList) {
+        faqList.innerHTML = '<div class="faq-item" style="color: red;">Failed to load FAQ</div>';
+      }
     });
 }
 
 // Render FAQ items
 function renderFAQ() {
   const faqList = document.getElementById('faqList');
-  if (!faqList || !faqData || !faqData.questions) return;
+  if (!faqList || !faqData || !faqData.questions) {
+    console.error('FAQ rendering failed:', {faqList: !!faqList, faqData: !!faqData});
+    return;
+  }
   
+  console.log('Rendering ' + faqData.questions.length + ' FAQ items');
   faqList.innerHTML = '';
   
   faqData.questions.forEach(function(item, index) {
     const faqItem = document.createElement('div');
     faqItem.className = 'faq-item';
-    faqItem.setAttribute('data-index', index);
+    faqItem.setAttribute('data-index', String(index));
+    faqItem.setAttribute('data-question', item.q);
     
     const icon = document.createElement('i');
     icon.className = 'fas fa-question-circle mr-2 text-purple-600';
+    icon.style.pointerEvents = 'none';
     
-    const text = document.createTextNode(item.q);
+    const textSpan = document.createElement('span');
+    textSpan.textContent = item.q;
+    textSpan.style.pointerEvents = 'none';
     
     faqItem.appendChild(icon);
-    faqItem.appendChild(text);
+    faqItem.appendChild(textSpan);
     
-    faqItem.addEventListener('click', function() {
+    faqItem.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
       const idx = parseInt(this.getAttribute('data-index'));
+      console.log('FAQ item clicked:', idx, this.getAttribute('data-question'));
       showAnswer(idx);
     });
     
     faqList.appendChild(faqItem);
   });
+  
+  console.log('FAQ items rendered successfully');
 }
 
 // Show answer in chat
 function showAnswer(index) {
-  if (!faqData || !faqData.questions || !faqData.questions[index]) return;
+  console.log('showAnswer called with index:', index);
+  
+  if (!faqData || !faqData.questions) {
+    console.error('FAQ data not available');
+    return;
+  }
+  
+  if (!faqData.questions[index]) {
+    console.error('Question not found at index:', index);
+    return;
+  }
   
   const question = faqData.questions[index];
   const messages = document.getElementById('chatbotMessages');
-  if (!messages) return;
+  
+  if (!messages) {
+    console.error('Messages container not found');
+    return;
+  }
+  
+  console.log('Showing answer for:', question.q);
   
   // User message
   const userMsg = document.createElement('div');
@@ -284,15 +348,26 @@ function showAnswer(index) {
   userMsg.textContent = question.q;
   messages.appendChild(userMsg);
   
-  messages.scrollTop = messages.scrollHeight;
+  console.log('User message added');
   
-  // Bot response
+  // Scroll to bottom
+  setTimeout(function() {
+    messages.scrollTop = messages.scrollHeight;
+  }, 50);
+  
+  // Bot response with delay
   setTimeout(function() {
     const botMsg = document.createElement('div');
     botMsg.className = 'message bot';
-    botMsg.innerHTML = question.a.replace(/\n/g, '<br>');
-    messages.appendChild(botMsg);
     
+    // Format answer text
+    const answerText = question.a || 'No answer available';
+    botMsg.innerHTML = answerText.replace(/\n/g, '<br>');
+    
+    messages.appendChild(botMsg);
+    console.log('Bot message added');
+    
+    // Scroll to bottom again
     setTimeout(function() {
       messages.scrollTop = messages.scrollHeight;
     }, 100);
