@@ -154,8 +154,125 @@ app.get('/api/faq', (c) => {
       title: 'Frequently Asked Questions',
       questions: [
         {
-          q: 'What is a Local Currency O2O Platform?',
-          a: 'A public-private O2O platform that supports digital transformation of local small businesses.'
+          q: 'What is the Local Currency O2O Platform?',
+          a: 'A public-private O2O platform that supports digital transformation of local small businesses, strengthens local currency linkage, and creates new local jobs.'
+        },
+        {
+          q: 'What are the benefits?',
+          a: 'Consumers: Up to 10% cashback with local currency payment\nSmall Businesses: 1-2% commission (saving avg. ₩8M annually)\nLocal Government: Economic revitalization and job creation (80-150 jobs)'
+        },
+        {
+          q: 'How to use?',
+          a: '1. Download app and sign up\n2. Register local currency (card/mobile)\n3. Order from nearby merchants\n4. Pay with local currency and get benefits'
+        },
+        {
+          q: 'How do merchants join?',
+          a: 'Easy application via platform app or website. Start with low commission without advertising or enrollment fees.'
+        }
+      ]
+    },
+    zh: {
+      title: '常见问题',
+      questions: [
+        {
+          q: '什么是地区货币O2O平台？',
+          a: '支持本地小企业数字化转型，通过地区货币连接增强商圈活力，创造新的地区就业机会的公私合作O2O平台。'
+        },
+        {
+          q: '有什么优惠？',
+          a: '消费者：使用地区货币支付最高10%返现\n小企业：手续费降至1-2%（年均节省800万韩元）\n地方政府：激活地区经济及创造就业（80-150个岗位）'
+        },
+        {
+          q: '如何使用？',
+          a: '1. 下载应用并注册\n2. 注册地区货币（卡片/移动）\n3. 在附近商家订购\n4. 用地区货币支付并获得优惠'
+        },
+        {
+          q: '商家如何加入？',
+          a: '通过平台应用或网站轻松申请加盟。无需广告费和入驻费，以低手续费开始。'
+        }
+      ]
+    },
+    ja: {
+      title: 'よくある質問',
+      questions: [
+        {
+          q: '地域通貨O2Oプラットフォームとは何ですか？',
+          a: '地域の小規模事業者のデジタル転換を支援し、地域通貨連携で商圏の自生力を強化し、新しい地域雇用を創出する公民協力O2Oプラットフォームです。'
+        },
+        {
+          q: 'どんなメリットがありますか？',
+          a: '消費者：地域通貨決済時最大10%キャッシュバック\n小規模事業者：手数料1~2%に削減（年平均800万ウォン削減）\n地方自治体：地域経済活性化と雇用創出（80~150名）'
+        },
+        {
+          q: '使い方は？',
+          a: '1. アプリダウンロードと会員登録\n2. 地域通貨登録（カード/モバイル）\n3. 近くの加盟店で注文\n4. 地域通貨で決済してメリット獲得'
+        },
+        {
+          q: '加盟店はどう参加しますか？',
+          a: 'プラットフォームアプリまたはウェブサイトで簡単に加盟店申請が可能です。広告費や入店費なしで低い手数料で始められます。'
+        }
+      ]
+    },
+    vi: {
+      title: 'Câu hỏi thường gặp',
+      questions: [
+        {
+          q: 'Nền tảng O2O Tiền tệ Địa phương là gì?',
+          a: 'Nền tảng O2O công-tư hỗ trợ chuyển đổi số cho doanh nghiệp nhỏ địa phương, tăng cường sức sống khu thương mại thông qua liên kết tiền tệ địa phương, và tạo việc làm mới.'
+        },
+        {
+          q: 'Có lợi ích gì?',
+          a: 'Người tiêu dùng: Hoàn tiền tối đa 10% khi thanh toán bằng tiền tệ địa phương\nDoanh nghiệp nhỏ: Phí hoa hồng 1-2% (tiết kiệm trung bình 8 triệu won/năm)\nChính quyền: Kích hoạt kinh tế và tạo việc làm (80-150 việc)'
+        },
+        {
+          q: 'Làm thế nào để sử dụng?',
+          a: '1. Tải ứng dụng và đăng ký\n2. Đăng ký tiền tệ địa phương (thẻ/di động)\n3. Đặt hàng tại cửa hàng gần đó\n4. Thanh toán bằng tiền tệ địa phương và nhận ưu đãi'
+        },
+        {
+          q: 'Cửa hàng tham gia như thế nào?',
+          a: 'Đăng ký đơn giản qua ứng dụng hoặc website. Bắt đầu với phí hoa hồng thấp không cần phí quảng cáo hay phí gia nhập.'
+        }
+      ]
+    },
+    th: {
+      title: 'คำถามที่พบบ่อย',
+      questions: [
+        {
+          q: 'แพลตฟอร์ม O2O สกุลเงินท้องถิ่นคืออะไร?',
+          a: 'แพลตฟอร์ม O2O ภาครัฐ-เอกชนที่สนับสนุนการเปลี่ยนแปลงทางดิจิทัลของธุรกิจขนาดเล็กในท้องถิ่น เสริมสร้างความเข้มแข็งของย่านการค้า และสร้างงานใหม่'
+        },
+        {
+          q: 'มีประโยชน์อะไรบ้าง?',
+          a: 'ผู้บริโภค: แคชแบ็กสูงสุด 10% เมื่อชำระด้วยสกุลเงินท้องถิ่น\nธุรกิจขนาดเล็ก: ค่าคอมมิชชัน 1-2% (ประหยัดเฉลี่ย 8 ล้านวอนต่อปี)\nรัฐบาลท้องถิ่น: กระตุ้นเศรษฐกิจและสร้างงาน (80-150 ตำแหน่ง)'
+        },
+        {
+          q: 'ใช้งานอย่างไร?',
+          a: '1. ดาวน์โหลดแอพและสมัครสมาชิก\n2. ลงทะเบียนสกุลเงินท้องถิ่น (บัตร/มือถือ)\n3. สั่งซื้อจากร้านค้าใกล้เคียง\n4. ชำระด้วยสกุลเงินท้องถิ่นและรับสิทธิประโยชน์'
+        },
+        {
+          q: 'ร้านค้าเข้าร่วมได้อย่างไร?',
+          a: 'สมัครง่ายๆ ผ่านแอพหรือเว็บไซต์ เริ่มต้นด้วยค่าคอมมิชชันต่ำโดยไม่มีค่าโฆษณาหรือค่าเข้าร่วม'
+        }
+      ]
+    },
+    ar: {
+      title: 'الأسئلة الشائعة',
+      questions: [
+        {
+          q: 'ما هي منصة O2O للعملة المحلية؟',
+          a: 'منصة O2O عامة-خاصة تدعم التحول الرقمي للشركات الصغيرة المحلية، وتعزز المناطق التجارية من خلال ربط العملة المحلية، وتخلق فرص عمل جديدة.'
+        },
+        {
+          q: 'ما هي الفوائد؟',
+          a: 'المستهلكون: استرداد نقدي يصل إلى 10٪ عند الدفع بالعملة المحلية\nالشركات الصغيرة: عمولة 1-2٪ (توفير متوسط 8 مليون وون سنويًا)\nالحكومة المحلية: تنشيط الاقتصاد وخلق وظائف (80-150 وظيفة)'
+        },
+        {
+          q: 'كيف تستخدم المنصة؟',
+          a: '1. تنزيل التطبيق والتسجيل\n2. تسجيل العملة المحلية (بطاقة/موبايل)\n3. الطلب من التجار القريبين\n4. الدفع بالعملة المحلية والحصول على الفوائد'
+        },
+        {
+          q: 'كيف ينضم التجار؟',
+          a: 'تقديم طلب سهل عبر التطبيق أو الموقع. ابدأ بعمولة منخفضة بدون رسوم إعلان أو اشتراك.'
         }
       ]
     }
@@ -390,26 +507,16 @@ app.get('/', (c) => {
         <div class="chatbot-panel" id="chatbotPanel">
             <div class="chatbot-header">
                 <div>
-                    <h3 class="font-bold text-lg">Benefit 챗봇</h3>
-                    <p class="text-sm opacity-90">무엇을 도와드릴까요?</p>
+                    <h3 class="font-bold text-lg" id="chatbotTitle">Benefit 챗봇</h3>
+                    <p class="text-sm opacity-90" id="chatbotSubtitle">무엇을 도와드릴까요?</p>
                 </div>
                 <button id="closeChatbot" class="text-white hover:text-gray-200">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             
-            <div class="lang-selector">
-                <button class="lang-btn active" data-lang="ko">한국어</button>
-                <button class="lang-btn" data-lang="en">English</button>
-                <button class="lang-btn" data-lang="zh">中文</button>
-                <button class="lang-btn" data-lang="ja">日本語</button>
-                <button class="lang-btn" data-lang="vi">Tiếng Việt</button>
-                <button class="lang-btn" data-lang="th">ไทย</button>
-                <button class="lang-btn" data-lang="ar">العربية</button>
-            </div>
-            
             <div class="chatbot-messages" id="chatbotMessages">
-                <div class="message bot">안녕하세요! Benefit 플랫폼 도우미입니다.</div>
+                <div class="message bot" id="welcomeMessage">안녕하세요! Benefit 플랫폼 도우미입니다.</div>
             </div>
             
             <div class="faq-list" id="faqList"></div>

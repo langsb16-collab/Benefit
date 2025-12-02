@@ -4,7 +4,7 @@ let faqData = null;
 let menuData = null;
 let platformTexts = {};
 
-// Language translations
+// Language translations for chatbot
 const translations = {
   ko: {
     chatbotTitle: 'Benefit 챗봇',
@@ -15,6 +15,31 @@ const translations = {
     chatbotTitle: 'Benefit Chatbot',
     chatbotSubtitle: 'How can I help you?',
     welcomeMessage: 'Hello! I\'m the Benefit platform assistant. Please select a question.'
+  },
+  zh: {
+    chatbotTitle: 'Benefit 聊天机器人',
+    chatbotSubtitle: '我能帮您什么？',
+    welcomeMessage: '您好！我是Benefit平台助手。请选择一个问题。'
+  },
+  ja: {
+    chatbotTitle: 'Benefit チャットボット',
+    chatbotSubtitle: '何かお手伝いできますか？',
+    welcomeMessage: 'こんにちは！Benefitプラットフォームアシスタントです。質問を選択してください。'
+  },
+  vi: {
+    chatbotTitle: 'Chatbot Benefit',
+    chatbotSubtitle: 'Tôi có thể giúp gì?',
+    welcomeMessage: 'Xin chào! Tôi là trợ lý nền tảng Benefit. Vui lòng chọn một câu hỏi.'
+  },
+  th: {
+    chatbotTitle: 'แชทบอท Benefit',
+    chatbotSubtitle: 'ฉันช่วยอะไรได้บ้าง?',
+    welcomeMessage: 'สวัสดี! ฉันคือผู้ช่วยแพลตฟอร์ม Benefit กรุณาเลือกคำถาม'
+  },
+  ar: {
+    chatbotTitle: 'روبوت الدردشة Benefit',
+    chatbotSubtitle: 'كيف يمكنني المساعدة؟',
+    welcomeMessage: 'مرحبا! أنا مساعد منصة Benefit. الرجاء اختيار سؤال.'
   }
 };
 
@@ -200,6 +225,14 @@ function initPlatformLanguage() {
       // Update platform language
       currentLang = selectedLang;
       updatePlatformLanguage(selectedLang);
+      
+      // Also update chatbot language
+      updateChatbotLanguage(selectedLang);
+      
+      // Reload FAQ for new language
+      if (faqData) {
+        loadFAQ(selectedLang);
+      }
       
       console.log('Platform language changed to:', selectedLang);
     });
@@ -396,13 +429,11 @@ function initChatbot() {
   const chatbotBtn = document.getElementById('chatbotBtn');
   const chatbotPanel = document.getElementById('chatbotPanel');
   const closeChatbot = document.getElementById('closeChatbot');
-  const langButtons = document.querySelectorAll('.lang-btn');
   
   console.log('Chatbot elements found:', {
     chatbotBtn: !!chatbotBtn,
     chatbotPanel: !!chatbotPanel,
-    closeChatbot: !!closeChatbot,
-    langButtons: langButtons.length
+    closeChatbot: !!closeChatbot
   });
   
   if (!chatbotBtn || !chatbotPanel) {
@@ -419,6 +450,7 @@ function initChatbot() {
     if (isActive && !faqData) {
       console.log('Loading FAQ on first open...');
       loadFAQ(currentLang);
+      updateChatbotLanguage(currentLang);
     }
   });
   
@@ -429,40 +461,26 @@ function initChatbot() {
     });
   }
   
-  langButtons.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      console.log('Language button clicked:', this.dataset.lang);
-      
-      langButtons.forEach(function(b) {
-        b.classList.remove('active');
-      });
-      this.classList.add('active');
-      currentLang = this.dataset.lang;
-      
-      loadFAQ(currentLang);
-      updateChatbotUI();
-    });
-  });
-  
   console.log('=== Chatbot initialized successfully');
 }
 
-// Update chatbot UI
-function updateChatbotUI() {
-  const trans = translations[currentLang] || translations.ko;
+// Update chatbot language (called when platform language changes)
+function updateChatbotLanguage(lang) {
+  const trans = translations[lang] || translations.ko;
   
-  const header = document.querySelector('.chatbot-header');
-  if (header) {
-    const titleEl = header.querySelector('h3');
-    const subtitleEl = header.querySelector('p');
-    if (titleEl) titleEl.textContent = trans.chatbotTitle;
-    if (subtitleEl) subtitleEl.textContent = trans.chatbotSubtitle;
-  }
+  // Update chatbot title
+  const titleEl = document.getElementById('chatbotTitle');
+  if (titleEl) titleEl.textContent = trans.chatbotTitle;
   
-  const messages = document.getElementById('chatbotMessages');
-  if (messages) {
-    messages.innerHTML = '<div class="message bot">' + trans.welcomeMessage + '</div>';
-  }
+  // Update chatbot subtitle
+  const subtitleEl = document.getElementById('chatbotSubtitle');
+  if (subtitleEl) subtitleEl.textContent = trans.chatbotSubtitle;
+  
+  // Update welcome message
+  const welcomeMsg = document.getElementById('welcomeMessage');
+  if (welcomeMsg) welcomeMsg.textContent = trans.welcomeMessage;
+  
+  console.log('Chatbot language updated to:', lang);
 }
 
 // Load FAQ data
