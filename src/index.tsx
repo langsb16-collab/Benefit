@@ -201,82 +201,82 @@ app.get('/', (c) => {
         </nav>
 
         <!-- Hero Section -->
-        <section class="hero-banner gradient-bg text-white py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fadeIn">
+        <section class="hero-banner gradient-bg text-white py-12 md:py-20">
+            <div class="container mx-auto px-4 md:px-6 text-center">
+                <h1 class="text-3xl md:text-6xl font-bold mb-3 md:mb-6 animate-fadeIn">
                     지역화폐 O2O 플랫폼
                 </h1>
-                <h2 class="text-3xl md:text-4xl font-light mb-8">Benefit</h2>
-                <p class="text-xl mb-12 max-w-3xl mx-auto">
-                    지역 소상공인의 디지털 전환 지원<br>
-                    지역화폐 연계로 상권 자생력 강화<br>
+                <h2 class="text-xl md:text-4xl font-light mb-4 md:mb-8">Benefit</h2>
+                <p class="text-sm md:text-xl mb-6 md:mb-12 max-w-3xl mx-auto leading-relaxed">
+                    지역 소상공인의 디지털 전환 지원<br class="hidden md:inline">
+                    지역화폐 연계로 상권 자생력 강화<br class="hidden md:inline">
                     새로운 지역 일자리 창출
                 </p>
-                <div class="flex gap-4 justify-center flex-wrap">
-                    <a href="#features" class="bg-white text-purple-600 px-8 py-4 rounded-full font-bold hover:shadow-xl transition">
-                        서비스 시작하기
+                <div class="flex gap-2 md:gap-4 justify-center flex-wrap px-2">
+                    <a href="#features" class="bg-white text-purple-600 px-4 md:px-8 py-2 md:py-4 rounded-full font-bold text-sm md:text-base hover:shadow-xl transition">
+                        서비스 시작
                     </a>
-                    <a href="#benefits" class="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-purple-600 transition">
-                        자세히 알아보기
+                    <a href="#benefits" class="border-2 border-white px-4 md:px-8 py-2 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-white hover:text-purple-600 transition">
+                        자세히 보기
                     </a>
                 </div>
             </div>
         </section>
 
         <!-- Quick Menu Cards -->
-        <section class="py-16 bg-white">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl font-bold text-center mb-12">주요 서비스</h2>
-                <div class="grid md:grid-cols-4 gap-6" id="quickMenu">
+        <section class="py-8 md:py-16 bg-white">
+            <div class="container mx-auto px-4 md:px-6">
+                <h2 class="text-xl md:text-3xl font-bold text-center mb-6 md:mb-12">주요 서비스</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6" id="quickMenu">
                     <!-- Quick menu cards will be loaded here -->
                 </div>
             </div>
         </section>
 
         <!-- Benefits Section -->
-        <section id="benefits" class="py-20 bg-gray-100">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-16">세 가지 핵심 혜택</h2>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
-                        <div class="gradient-bg w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                            <i class="fas fa-coins text-3xl text-white"></i>
+        <section id="benefits" class="py-10 md:py-20 bg-gray-100">
+            <div class="container mx-auto px-4 md:px-6">
+                <h2 class="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16">세 가지 핵심 혜택</h2>
+                <div class="grid md:grid-cols-3 gap-4 md:gap-8">
+                    <div class="card-hover bg-white p-5 md:p-8 rounded-2xl shadow-lg">
+                        <div class="gradient-bg w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                            <i class="fas fa-coins text-xl md:text-3xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">소상공인 부담 감소</h3>
-                        <p class="text-gray-600 mb-4">
+                        <h3 class="text-lg md:text-2xl font-bold mb-2 md:mb-4">소상공인 부담 감소</h3>
+                        <p class="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
                             민간 플랫폼 대비 수수료 <strong>1~2%</strong>로 대폭 절감
                         </p>
-                        <ul class="text-gray-600 space-y-2">
+                        <ul class="text-gray-600 space-y-1 md:space-y-2 text-sm md:text-base">
                             <li>✓ 광고비·입점비 제로</li>
                             <li>✓ 연간 평균 800만원 절감</li>
                             <li>✓ 실질 순이익 증가</li>
                         </ul>
                     </div>
                     
-                    <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
-                        <div class="gradient-bg-2 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                            <i class="fas fa-chart-line text-3xl text-white"></i>
+                    <div class="card-hover bg-white p-5 md:p-8 rounded-2xl shadow-lg">
+                        <div class="gradient-bg-2 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                            <i class="fas fa-chart-line text-xl md:text-3xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">지역경제 선순환</h3>
-                        <p class="text-gray-600 mb-4">
+                        <h3 class="text-lg md:text-2xl font-bold mb-2 md:mb-4">지역경제 선순환</h3>
+                        <p class="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
                             지역화폐 이용률 확대 및 수수료 지역 내 환류
                         </p>
-                        <ul class="text-gray-600 space-y-2">
+                        <ul class="text-gray-600 space-y-1 md:space-y-2 text-sm md:text-base">
                             <li>✓ 역외 유출 차단</li>
                             <li>✓ 전통시장 활성화</li>
                             <li>✓ 상권 데이터 분석</li>
                         </ul>
                     </div>
                     
-                    <div class="card-hover bg-white p-8 rounded-2xl shadow-lg">
-                        <div class="gradient-bg-3 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                            <i class="fas fa-users text-3xl text-white"></i>
+                    <div class="card-hover bg-white p-5 md:p-8 rounded-2xl shadow-lg">
+                        <div class="gradient-bg-3 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                            <i class="fas fa-users text-xl md:text-3xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">일자리 창출</h3>
-                        <p class="text-gray-600 mb-4">
+                        <h3 class="text-lg md:text-2xl font-bold mb-2 md:mb-4">일자리 창출</h3>
+                        <p class="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
                             1개 시군 기준 <strong>80~150명</strong> 직간접 고용
                         </p>
-                        <ul class="text-gray-600 space-y-2">
+                        <ul class="text-gray-600 space-y-1 md:space-y-2 text-sm md:text-base">
                             <li>✓ 배달·픽업 인력</li>
                             <li>✓ 플랫폼 운영·IT</li>
                             <li>✓ 전통시장 물류센터</li>
@@ -287,10 +287,10 @@ app.get('/', (c) => {
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="py-20 bg-white">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-16">전체 서비스 메뉴</h2>
-                <div class="grid md:grid-cols-3 gap-8" id="featuresGrid">
+        <section id="features" class="py-10 md:py-20 bg-white">
+            <div class="container mx-auto px-4 md:px-6">
+                <h2 class="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16">전체 서비스 메뉴</h2>
+                <div class="grid md:grid-cols-3 gap-4 md:gap-8" id="featuresGrid">
                     <!-- Features will be loaded here -->
                 </div>
             </div>
