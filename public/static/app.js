@@ -361,6 +361,16 @@ function renderQuickMenu() {
   // Show first 4 main services
   const quickItems = menuData.mainMenu.slice(1, 5);
   
+  const serviceCountText = {
+    ko: '개 서비스',
+    en: ' services',
+    zh: '个服务',
+    ja: 'サービス',
+    vi: ' dịch vụ',
+    th: ' บริการ',
+    ar: ' خدمات'
+  };
+  
   const quickHTML = quickItems.map(function(item, index) {
     const gradients = [
       'gradient-bg',
@@ -369,6 +379,10 @@ function renderQuickMenu() {
       'gradient-bg'
     ];
     
+    const servicesText = item.subMenu ? 
+      (item.subMenu.length + (serviceCountText[currentLang] || serviceCountText.ko)) : 
+      (currentLang === 'ko' ? '바로 시작' : 'Quick Start');
+    
     return `
       <div class="quick-menu-card">
         <div class="quick-menu-icon ${gradients[index]}">
@@ -376,7 +390,7 @@ function renderQuickMenu() {
         </div>
         <h3 class="font-bold text-lg mb-2">${item.name}</h3>
         <p class="text-gray-600 text-sm">
-          ${item.subMenu ? item.subMenu.length + '개 서비스' : '바로 시작'}
+          ${servicesText}
         </p>
       </div>
     `;
@@ -418,7 +432,10 @@ function renderFeaturesGrid() {
             return `
               <li class="submenu-item">
                 <i class="fas ${sub.icon}"></i>
-                <span>${sub.name}</span>
+                <div>
+                  <span class="font-medium">${sub.name}</span>
+                  ${sub.desc ? `<div class="text-xs text-gray-500 mt-1">${sub.desc}</div>` : ''}
+                </div>
               </li>
             `;
           }).join('')}
