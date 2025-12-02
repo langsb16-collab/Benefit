@@ -185,11 +185,57 @@ app.get('/', (c) => {
                     <div class="flex items-center">
                         <a href="/" class="text-2xl font-bold">Benefit</a>
                     </div>
-                    <button id="mobileMenuBtn" class="md:hidden text-white">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                    <div id="mainNav" class="hidden md:flex items-center space-x-1">
-                        <!-- Main menu will be loaded here -->
+                    
+                    <!-- Desktop: Language Selector + Mobile Menu Button -->
+                    <div class="flex items-center gap-4">
+                        <!-- Language Selector (Desktop & Mobile) -->
+                        <div class="language-selector-wrapper relative">
+                            <button id="languageToggle" class="language-toggle-btn flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all">
+                                <i class="fas fa-globe"></i>
+                                <span id="currentLangText">한국어</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div id="languageDropdown" class="language-dropdown hidden absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl overflow-hidden min-w-[160px]">
+                                <button class="lang-option active" data-lang="ko" data-text="한국어">
+                                    <i class="fas fa-check text-purple-600"></i>
+                                    <span>한국어</span>
+                                </button>
+                                <button class="lang-option" data-lang="en" data-text="English">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>English</span>
+                                </button>
+                                <button class="lang-option" data-lang="zh" data-text="中文">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>中文</span>
+                                </button>
+                                <button class="lang-option" data-lang="ja" data-text="日本語">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>日本語</span>
+                                </button>
+                                <button class="lang-option" data-lang="vi" data-text="Tiếng Việt">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>Tiếng Việt</span>
+                                </button>
+                                <button class="lang-option" data-lang="th" data-text="ไทย">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>ไทย</span>
+                                </button>
+                                <button class="lang-option" data-lang="ar" data-text="العربية">
+                                    <i class="fas fa-check text-purple-600 invisible"></i>
+                                    <span>العربية</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Menu Button -->
+                        <button id="mobileMenuBtn" class="md:hidden text-white">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                        
+                        <!-- Desktop Main Navigation -->
+                        <div id="mainNav" class="hidden md:flex items-center space-x-1">
+                            <!-- Main menu will be loaded here -->
+                        </div>
                     </div>
                 </div>
             </div>

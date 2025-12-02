@@ -2,6 +2,7 @@
 let currentLang = 'ko';
 let faqData = null;
 let menuData = null;
+let platformTexts = {};
 
 // Language translations
 const translations = {
@@ -21,6 +22,9 @@ const translations = {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Initializing app...');
   
+  // Initialize platform language selector
+  initPlatformLanguage();
+  
   // Load menu data
   loadMenu();
   
@@ -33,6 +37,221 @@ document.addEventListener('DOMContentLoaded', function() {
   // Smooth scrolling
   initSmoothScroll();
 });
+
+// Platform language data
+const platformLanguages = {
+  ko: {
+    heroTitle: '지역화폐 O2O 플랫폼',
+    heroSubtitle: 'Benefit',
+    heroDesc: '지역 소상공인의 디지털 전환 지원\n지역화폐 연계로 상권 자생력 강화\n새로운 지역 일자리 창출',
+    btnStart: '서비스 시작',
+    btnDetail: '자세히 보기',
+    sectionServices: '주요 서비스',
+    sectionBenefits: '세 가지 핵심 혜택',
+    benefit1Title: '소상공인 부담 감소',
+    benefit1Desc: '민간 플랫폼 대비 수수료 1~2%로 대폭 절감',
+    benefit2Title: '지역경제 선순환',
+    benefit2Desc: '지역화폐 이용률 확대 및 수수료 지역 내 환류',
+    benefit3Title: '일자리 창출',
+    benefit3Desc: '1개 시군 기준 80~150명 직간접 고용',
+    sectionAllServices: '전체 서비스 메뉴'
+  },
+  en: {
+    heroTitle: 'Local Currency O2O Platform',
+    heroSubtitle: 'Benefit',
+    heroDesc: 'Supporting digital transformation of local small businesses\nStrengthening commercial districts through local currency linkage\nCreating new local jobs',
+    btnStart: 'Get Started',
+    btnDetail: 'Learn More',
+    sectionServices: 'Main Services',
+    sectionBenefits: 'Three Core Benefits',
+    benefit1Title: 'Reduced Burden for Small Businesses',
+    benefit1Desc: 'Commission reduced to 1-2% compared to private platforms',
+    benefit2Title: 'Local Economic Circulation',
+    benefit2Desc: 'Increased local currency usage and fee recirculation',
+    benefit3Title: 'Job Creation',
+    benefit3Desc: '80-150 direct and indirect jobs per city/county',
+    sectionAllServices: 'All Services'
+  },
+  zh: {
+    heroTitle: '地区货币 O2O 平台',
+    heroSubtitle: 'Benefit',
+    heroDesc: '支持本地小企业数字化转型\n通过地区货币连接增强商圈活力\n创造新的地区就业机会',
+    btnStart: '开始使用',
+    btnDetail: '了解更多',
+    sectionServices: '主要服务',
+    sectionBenefits: '三大核心优势',
+    benefit1Title: '减轻小企业负担',
+    benefit1Desc: '手续费降至1-2%，远低于私营平台',
+    benefit2Title: '地区经济良性循环',
+    benefit2Desc: '扩大地区货币使用，手续费在地区内流通',
+    benefit3Title: '创造就业',
+    benefit3Desc: '每个市/县创造80-150个直接和间接就业',
+    sectionAllServices: '所有服务'
+  },
+  ja: {
+    heroTitle: '地域通貨 O2O プラットフォーム',
+    heroSubtitle: 'Benefit',
+    heroDesc: '地域の小規模事業者のデジタル転換を支援\n地域通貨連携で商圏の自生力を強化\n新しい地域雇用を創出',
+    btnStart: 'サービス開始',
+    btnDetail: '詳細を見る',
+    sectionServices: '主要サービス',
+    sectionBenefits: '3つの核心メリット',
+    benefit1Title: '小規模事業者の負担軽減',
+    benefit1Desc: '手数料を民間プラットフォームより1~2%に大幅削減',
+    benefit2Title: '地域経済の好循環',
+    benefit2Desc: '地域通貨利用率拡大および手数料の域内還流',
+    benefit3Title: '雇用創出',
+    benefit3Desc: '1つの市・郡基準で80~150名の直接・間接雇用',
+    sectionAllServices: '全サービスメニュー'
+  },
+  vi: {
+    heroTitle: 'Nền tảng O2O Tiền tệ Địa phương',
+    heroSubtitle: 'Benefit',
+    heroDesc: 'Hỗ trợ chuyển đổi số cho doanh nghiệp nhỏ địa phương\nTăng cường sức sống khu thương mại thông qua liên kết tiền tệ địa phương\nTạo việc làm mới cho địa phương',
+    btnStart: 'Bắt đầu',
+    btnDetail: 'Tìm hiểu thêm',
+    sectionServices: 'Dịch vụ chính',
+    sectionBenefits: 'Ba lợi ích cốt lõi',
+    benefit1Title: 'Giảm gánh nặng cho doanh nghiệp nhỏ',
+    benefit1Desc: 'Phí hoa hồng giảm xuống 1-2% so với nền tảng tư nhân',
+    benefit2Title: 'Tuần hoàn kinh tế địa phương',
+    benefit2Desc: 'Tăng tỷ lệ sử dụng tiền tệ địa phương và tái lưu thông phí',
+    benefit3Title: 'Tạo việc làm',
+    benefit3Desc: '80-150 việc làm trực tiếp và gián tiếp cho mỗi thành phố/huyện',
+    sectionAllServices: 'Tất cả dịch vụ'
+  },
+  th: {
+    heroTitle: 'แพลตฟอร์ม O2O สกุลเงินท้องถิ่น',
+    heroSubtitle: 'Benefit',
+    heroDesc: 'สนับสนุนการเปลี่ยนแปลงทางดิจิทัลของธุรกิจขนาดเล็กในท้องถิ่น\nเสริมสร้างความเข้มแข็งของย่านการค้าผ่านการเชื่อมโยงสกุลเงินท้องถิ่น\nสร้างงานใหม่ในท้องถิ่น',
+    btnStart: 'เริ่มใช้งาน',
+    btnDetail: 'เรียนรู้เพิ่มเติม',
+    sectionServices: 'บริการหลัก',
+    sectionBenefits: 'สามประโยชน์หลัก',
+    benefit1Title: 'ลดภาระธุรกิจขนาดเล็ก',
+    benefit1Desc: 'ค่าคอมมิชชันลดเหลือ 1-2% เมื่อเทียบกับแพลตฟอร์มเอกชน',
+    benefit2Title: 'การหมุนเวียนเศรษฐกิจท้องถิ่น',
+    benefit2Desc: 'เพิ่มการใช้สกุลเงินท้องถิ่นและค่าธรรมเนียมหมุนเวียนในพื้นที่',
+    benefit3Title: 'สร้างงาน',
+    benefit3Desc: 'สร้างงานทางตรงและทางอ้อม 80-150 ตำแหน่งต่อเมือง/อำเภอ',
+    sectionAllServices: 'บริการทั้งหมด'
+  },
+  ar: {
+    heroTitle: 'منصة O2O للعملة المحلية',
+    heroSubtitle: 'Benefit',
+    heroDesc: 'دعم التحول الرقمي للشركات الصغيرة المحلية\nتعزيز المناطق التجارية من خلال ربط العملة المحلية\nخلق فرص عمل محلية جديدة',
+    btnStart: 'ابدأ الآن',
+    btnDetail: 'معرفة المزيد',
+    sectionServices: 'الخدمات الرئيسية',
+    sectionBenefits: 'ثلاث فوائد أساسية',
+    benefit1Title: 'تقليل العبء على الشركات الصغيرة',
+    benefit1Desc: 'خفض العمولة إلى 1-2٪ مقارنة بالمنصات الخاصة',
+    benefit2Title: 'الدورة الاقتصادية المحلية',
+    benefit2Desc: 'زيادة استخدام العملة المحلية وإعادة تدوير الرسوم',
+    benefit3Title: 'خلق فرص العمل',
+    benefit3Desc: '80-150 وظيفة مباشرة وغير مباشرة لكل مدينة/مقاطعة',
+    sectionAllServices: 'جميع الخدمات'
+  }
+};
+
+// Initialize platform language selector
+function initPlatformLanguage() {
+  const languageToggle = document.getElementById('languageToggle');
+  const languageDropdown = document.getElementById('languageDropdown');
+  const langOptions = document.querySelectorAll('.lang-option');
+  
+  if (!languageToggle || !languageDropdown) return;
+  
+  // Toggle dropdown
+  languageToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    languageDropdown.classList.toggle('show');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!languageToggle.contains(e.target) && !languageDropdown.contains(e.target)) {
+      languageDropdown.classList.remove('show');
+    }
+  });
+  
+  // Language option click
+  langOptions.forEach(function(option) {
+    option.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      const selectedLang = this.dataset.lang;
+      const selectedText = this.dataset.text;
+      
+      // Update active state
+      langOptions.forEach(function(opt) {
+        opt.classList.remove('active');
+        opt.querySelector('i').classList.add('invisible');
+      });
+      this.classList.add('active');
+      this.querySelector('i').classList.remove('invisible');
+      
+      // Update button text
+      document.getElementById('currentLangText').textContent = selectedText;
+      
+      // Close dropdown
+      languageDropdown.classList.remove('show');
+      
+      // Update platform language
+      currentLang = selectedLang;
+      updatePlatformLanguage(selectedLang);
+      
+      console.log('Platform language changed to:', selectedLang);
+    });
+  });
+}
+
+// Update platform language
+function updatePlatformLanguage(lang) {
+  const texts = platformLanguages[lang] || platformLanguages.ko;
+  platformTexts = texts;
+  
+  // Update Hero section
+  const heroTitle = document.querySelector('.hero-banner h1');
+  const heroSubtitle = document.querySelector('.hero-banner h2');
+  const heroDesc = document.querySelector('.hero-banner p');
+  
+  if (heroTitle) heroTitle.textContent = texts.heroTitle;
+  if (heroSubtitle) heroSubtitle.textContent = texts.heroSubtitle;
+  if (heroDesc) {
+    heroDesc.innerHTML = texts.heroDesc.split('\n').join('<br class="hidden md:inline">');
+  }
+  
+  // Update buttons
+  const btnStart = document.querySelector('a[href="#features"]');
+  const btnDetail = document.querySelector('a[href="#benefits"]');
+  if (btnStart) btnStart.textContent = texts.btnStart;
+  if (btnDetail) btnDetail.textContent = texts.btnDetail;
+  
+  // Update section titles
+  const sectionTitles = document.querySelectorAll('h2');
+  if (sectionTitles[0]) sectionTitles[0].textContent = texts.sectionServices;
+  if (sectionTitles[1]) sectionTitles[1].textContent = texts.sectionBenefits;
+  if (sectionTitles[2]) sectionTitles[2].textContent = texts.sectionAllServices;
+  
+  // Update benefit cards
+  const benefitCards = document.querySelectorAll('#benefits .card-hover');
+  if (benefitCards[0]) {
+    benefitCards[0].querySelector('h3').textContent = texts.benefit1Title;
+    benefitCards[0].querySelector('p').textContent = texts.benefit1Desc;
+  }
+  if (benefitCards[1]) {
+    benefitCards[1].querySelector('h3').textContent = texts.benefit2Title;
+    benefitCards[1].querySelector('p').textContent = texts.benefit2Desc;
+  }
+  if (benefitCards[2]) {
+    benefitCards[2].querySelector('h3').textContent = texts.benefit3Title;
+    benefitCards[2].querySelector('p').textContent = texts.benefit3Desc;
+  }
+  
+  // Update HTML lang attribute
+  document.documentElement.lang = lang;
+}
 
 // Load menu from API
 function loadMenu() {
