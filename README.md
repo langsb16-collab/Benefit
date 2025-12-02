@@ -199,18 +199,19 @@ FAQ 데이터를 반환합니다.
 ## 🌐 접속 URL
 
 **프로덕션**: https://meditour.my  
-**프로덕션 (Cloudflare)**: https://meditour-korea.pages.dev  
+**프로덕션 (Cloudflare)**: https://251202.pages.dev  
+**최신 배포**: https://a644728a.251202.pages.dev  
 **개발 서버**: https://3000-ip8b523hmiqtqidta5sor-c07dda5e.sandbox.novita.ai
 
 ## 🔄 배포 정보
 
 **GitHub**: https://github.com/langsb16-collab/Benefit  
-**Cloudflare Pages 프로젝트**: meditour-korea  
+**Cloudflare Pages 프로젝트**: 251202  
 **커스텀 도메인**: meditour.my
 
-**마지막 배포**: 2025-01-02  
-**배포 ID**: 4c76d6ae  
-**버전**: v1.0.0
+**마지막 배포**: 2025-12-02  
+**배포 ID**: a644728a  
+**버전**: v1.0.1
 
 ## 📂 프로젝트 구조
 
